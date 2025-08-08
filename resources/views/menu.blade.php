@@ -6,9 +6,8 @@
 
 	$role_id = !empty($auth_data->role_id)?$auth_data->role_id:NULL;
     $college_id = !empty($auth_data->college_id)?$auth_data->college_id:NULL;
-    $register_type = !empty($auth_data->register_type)?$auth_data->register_type:NULL;
 
-	$module_arr = Modules::getAssignedModules($college_id, $role_id, $register_type);
+	$module_arr = Modules::getAssignedModules( $role_id);
 	// dd($module_arr,12121212);
 	$parent_arr = $module_arr['parent'];
 	$child_arr = $module_arr['child'];

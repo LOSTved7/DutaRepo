@@ -69,7 +69,7 @@ class Modules extends Model
                     ->update($arr_to_update);
     }       
 
-    public static function getAssignedModules($role_id, $register_type=NULL) {
+    public static function getAssignedModules($role_id) {
     // public static function getAssignedModules() {
         // dd(Auth::user());
         $data = Modules::join('module_assigning', 'modules.id', 'module_assigning.modules_id')
@@ -78,9 +78,6 @@ class Modules extends Model
                         ->where('modules.status', 1)
                         ->where('module_assigning.status', 1);
 
-        if(!empty($register_type)) {
-            $data->where('module_assigning.register_type', $register_type);
-        }
         $final_data = $data->orderBy('modules.name','asc')
                             ->get();
 

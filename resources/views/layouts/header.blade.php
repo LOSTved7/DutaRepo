@@ -158,23 +158,9 @@
 
 			 </div>
 			<!--navigation-->
-			@if(!empty($college_id) && empty($register_type)) 
 			<ul class="metismenu" id="menu">
 				@include('menu')
 			</ul>
-			<!-- THIS MENU IS FOR COLLEGES AND STUDENTS (COLLEGE PORTAL) -->
-			@elseif(!empty($company_id) && $register_type==1)				
-			<ul class="metismenu" id="menu">
-				@include('menu_employer')
-			</ul>
-			@elseif(empty($company_id) && $register_type==2)
-			<!-- this could be having college or not as per the profile that job seeker has saved -->
-			<ul class="metismenu" id="menu">
-				@include('menu_jobseeker')
-			</ul>	
-			@else
-
-			@endif
 
 
 
