@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('download_csv', 'CsvController@download_csv')->name('download_csv');
     Route::post('/send-emails', 'MailController@sendEmails')->name('send.emails');
     Route::post('getSubject', 'AjaxController@getSubject')->name('getSubject');
-        Route::resource('NewUser', 'NewUserController');
+    Route::resource('NewUser', 'NewUserController');
 
 
 });

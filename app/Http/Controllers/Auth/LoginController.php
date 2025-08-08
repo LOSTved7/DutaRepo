@@ -63,7 +63,7 @@ class LoginController extends Controller
                         $users_id = $user_data->id;
                         Auth::loginUsingId($users_id, true);
                         if(Auth::user()->role_id==59){
-                            return redirect('/Newuser');    
+                            return redirect('/NewUser');    
                         }
                         else{
                             return redirect('/staff_details');
@@ -82,7 +82,7 @@ class LoginController extends Controller
                         ]);
         if ($auth_attempt) {
                           if(Auth::user()->role_id==2){
-                            return redirect('/Newuser');    
+                            return redirect('/NewUser');    
                         }
                         else{
                             return redirect('/staff_details');
