@@ -174,6 +174,7 @@ class StaffCollegeMappingController extends Controller
     public function send_whatsapp_notification(Request $request)
     {
         $subject = !empty($request->subject) ? $request->subject : '';
+      
         $body = !empty($request->body) ? $request->body : '';
         $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
         $body = str_replace('    ', ' ', $request->input('body'));
@@ -183,21 +184,33 @@ class StaffCollegeMappingController extends Controller
         if (empty($numbers)) {
             return back()->with('error', 'No WhatsApp numbers selected to send notification.');
         }
-        // dd($numbers);
         foreach ($numbers as $num) {
             if (empty($num) || $num == "") {
                 return back()->with('error', 'WhatsApp Number Not Found to send notification.');
             }
         }
+        $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
+        if(!empty($attachment)) {
+            $extension = $attachment->getClientOriginalExtension();
+            $fileName = date('YmdHis').rand(10,99).'.'.$extension;
+                
+            $destinationPath_profile = public_path('whatsapp_message_attachments');
+            $attachment->move($destinationPath_profile, $fileName);
+            // dd($destinationPath_profile.'/'.$fileName);
+        }
+        else {
+            $pathForDB_profile = NULL;
+        }
+
         foreach ($numbers as $id => $mobile) {
             if (!empty($mobile)) {
 
                 $api_key   = "446121c5221741959770a43777e4aea7";
-                $base_url  = "http://waba.smsidea.com/api/v1";
+                $base_url  = "https://wa.smsidea.com/api/v1";
                 $phone_no  = "91".$mobile;
 
                 $message   = str_replace('    ', ' ', $body);
-                $image_url = !empty($image_url) ? $image_url : null;
+                $image_url = $destinationPath_profile.'/'.$fileName;
 
                 $action = $image_url ? "sendImage" : "sendMessage";
                 if ($action == "sendMessage") {
@@ -208,21 +221,20 @@ class StaffCollegeMappingController extends Controller
                     ];
                 } else {
                     $json = [
-                        "key"      => $api_key,
-                        "to"       => $phone_no,
-                        "url"      => $image_url,
+                        "key"=> $api_key,
+                        "to"=> $phone_no,
+                        "url"=> $image_url,
                         "caption"  => $message,
-                        "filename" => "File"
+                        "filename" => $fileName
                     ];
                 }
 
-                // Call API
                 $ch = curl_init();
                 curl_setopt_array($ch, [
-                    CURLOPT_URL            => $base_url . "/" . $action,
+                    CURLOPT_URL => $base_url . "/" . $action,
                     CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING       => "",
-                    CURLOPT_MAXREDIRS      => 10,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS   => 10,
                     CURLOPT_TIMEOUT        => 0,
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
@@ -232,6 +244,7 @@ class StaffCollegeMappingController extends Controller
                 ]);
 
                 $response = curl_exec($ch);
+                dd($response);
                 curl_close($ch);
 
                 $decoded = json_decode($response);
@@ -245,7 +258,6 @@ class StaffCollegeMappingController extends Controller
                 }
             }
         }
-
         return back()->with('message', 'WhatsApp messages sent successfully.');
     }
 }
