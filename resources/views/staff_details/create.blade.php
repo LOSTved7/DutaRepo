@@ -1,7 +1,7 @@
 @extends('layouts.header')
 
 @section('title')
-Create Staff 
+CREATE STAFF 
 @endsection
 
 @section('content')
@@ -15,7 +15,7 @@ Create Staff
 					<div class="card-body p-4">
 						<div class="row">
 									<div class="col-md-3 mt-2">
-										<h5 class="mb-4">ADD STAFF</h5>
+										<h3 class="mb-4">ADD STAFF</h3>
 									</div>
 									<div class="col-md-5">
 									</div>

@@ -33,7 +33,7 @@ class PasswordController extends Controller
         }
         else {
             //check current password is correct or not
-            if(Auth::attempt(['college_id' => Auth::user()->college_id,'email' => Auth::user()->email,'password' => $current_password])){
+            if(Auth::attempt(['email' => Auth::user()->email,'password' => $current_password])){
                 // $user=Auth::user();
                 $users_id = Auth::user()->id;
                 $new_password_hash = Hash::make($new_password);

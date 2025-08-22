@@ -12,7 +12,7 @@ User
             <div class="col-xl-12 mx-auto">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h4 class="mb-2">Edit User</h4>
+                        <h4 class="mb-2">EDIT USER</h4>
                         <form class="row g-3" action="{{ route($current_menu.'.update', $data->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
@@ -33,8 +33,8 @@ User
                                     <select class="form-select single-select-clear-field" name="department" id="department" required data-placeholder="Select Department">
                                         <option></option>
                                         @foreach($department_mast as $key => $value)
-                                            <option value="{{ $key }}" {{ $data->department_id == $key ? 'selected' : '' }}>{{ $value }}</option>
-                                        @endforeach
+									        <option value="{{ $value }}">{{ $value }}</option>
+									      @endforeach
                                     </select>
                                 </div>
 

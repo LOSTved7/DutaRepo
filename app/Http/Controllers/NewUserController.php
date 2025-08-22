@@ -142,7 +142,7 @@ class NewUserController extends Controller
         $decrypted_id=Crypt::DecryptString($id);
         $duColleges = DU_colleges::pluck('college_name');
         $role_id = Role::pluckActiveCodeAndName();
-        $department_mast = DB::table('department_mast')->distinct('department_name')->pluck('department_name','id');
+        $department_mast = DB::table('staff_detail')->distinct('department')->pluck('department');
         $data = DB::table('staff_profile')->join('users','staff_profile.users_id','users.id')->where('staff_profile.id',$decrypted_id)->select('staff_profile.*')->first();
         return view($this->current_menu.'.edit_election', [
             'current_menu'=>$this->current_menu,

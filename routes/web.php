@@ -31,7 +31,9 @@ Route::post('verify_otp_submit', 'PasswordController@verify_otp_submit')->name('
 Route::post('verify_otp_submit2', 'PasswordController@verify_otp_submit2')->name('verify_otp_submit2');
 Route::post('verifyFirstOTP', 'PasswordController@verifyFirstOTP')->name('verifyFirstOTP');
 Route::post('generate_password', 'PasswordController@generate_password')->name('generate_password');
-
+    Route::post('change_password', 'PasswordController@change_password');
+    Route::post('update_summary_profile', 'UserProfileController@update_summary_profile');
+    Route::resource('UserProfileMast', 'UserProfileController');
 
 Route::get('cpview', function () {
     return view('cpview');  //change password view

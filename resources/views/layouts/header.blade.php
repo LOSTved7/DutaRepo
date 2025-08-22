@@ -115,14 +115,14 @@
 		// 	}
 		// 	else {
 				$logo = 'images/app_logo/1.jpeg';
-				$short_name = 'UNIONE';
+				$short_name = 'DUTA';
 		// 		$college_data = '';
 		// 	}
     	// }
     	// else {
     	// 	$logo = '';
     	// 	$short_name = '';
-    		$user_profile_image = '';
+    		$user_profile_image = DB::table('users')->where('id', $users_id)->pluck('photo')->first();
     		$college_id = NULL;
 			$company_id = NULL;
 			$register_type = NULL;
@@ -148,7 +148,7 @@
 			<div class="sidebar-header">
 				<a href="{{ url('dashboard') }}" style="text-decoration: none;">
 				    <div style="display: flex; align-items: center;">
-				        <img src="{{ asset($logo) }}" class="logo-icon" alt="Org. Logo">
+				        <!-- <img src="{{ asset($logo) }}" class="logo-icon" alt="Org. Logo"> -->
 				        <h4 class="logo-text" style="color: #3e3f94; margin-left: 10px;">{{ strtoupper($short_name) }}</h4>
 				    </div>
 				</a>
@@ -361,13 +361,11 @@
 							</div>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
-							@if(!empty($college_id))
 							<li><a class="dropdown-item d-flex align-items-center" href="{{url('UserProfileMast')}}"><i class="bx bx-user fs-5"></i><span>Profile</span></a>
 							</li>
 							<li>
 								<div class="dropdown-divider mb-0"></div>
 							</li>
-							@endif
 							@if(!empty($college_id) && Auth::user()->role_id == 3)
 							<li><a class="dropdown-item d-flex align-items-center" href="{{url('student_dashboard')}}"><i class="bx bx-home-alt fs-5"></i><span>Dashboard</span></a>
 							</li>
@@ -423,7 +421,7 @@
 		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
 		<!--End Back To Top Button-->
 		<footer class="page-footer">
-			<p class="mb-0">Copyright © {{date('Y')}}. All rights reserved by UniOne ERP Solutions.</p>
+			<!-- <p class="mb-0">Copyright © {{date('Y')}}. All rights reserved by Msell.</p> -->
 		</footer>
 	</div>
 	<!--end wrapper-->
