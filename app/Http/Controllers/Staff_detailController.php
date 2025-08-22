@@ -33,18 +33,25 @@ class Staff_detailController extends Controller
             $staff_college_mapping = $staff_college_mapping->where('staff_profile_id', $staff_profile->id);
         }
         $staff_college_mapping =$staff_college_mapping->distinct()->pluck('college_name');
-        $data=DB::table('staff_detail')
-                ->where('status','!=',9);
-                if(!empty($grade)){
-                    $data->where('grade', $grade);
-                }
-                if(!empty($designation)){
-                    $data->where('designation', $designation);
-                }
-                if(!empty($department)){
-                    $data->where('department', $department);
-                }
-                $data = $data->get();
+       $data = DB::table('staff_detail')
+                ->where('status',1);
+
+            if(Auth::user()->role_id==60 && !empty($staff_profile)){
+                $data->whereIn('college_name', $staff_college_mapping);
+            }
+            if(!empty($grade)){
+                $data->where('grade', $grade);
+            }
+            if(!empty($college_name)){
+                $data->where('college_name', $college_name);
+            }
+            if(!empty($designation)){
+                $data->where('designation', $designation);
+            }
+            if(!empty($department)){
+                $data->where('department', $department);
+            }
+            $data = $data->get();
         $duColleges = DB::table('staff_detail');
         if(!empty($department)){
             $duColleges->where('department', $department);
@@ -105,7 +112,7 @@ class Staff_detailController extends Controller
                             ->join('staff_profile','staff_college_mapping.staff_profile_id','staff_profile.id')
                             ->where('staff_profile.users_id',$users_id)
                             ->where('staff_college_mapping.status',1)
-                            ->pluck('staff_college_mapping.college_name');
+                            ->pluck('staff_profile.college_name');
 
         return view('staff_details/create', [
             'current_menu' => $this->current_menu,
@@ -215,6 +222,7 @@ class Staff_detailController extends Controller
     public function update(Request $request, $id)
 {
     $decrypted_id = Crypt::decryptString($id);
+    // dd($request,$decrypted_id);
     $college_name = !empty($request->college_name) ? $request->college_name : NULL;
     $name = !empty($request->name) ? $request->name : NULL;
     $mobile_no1 = !empty($request->mobile_no1) ? $request->mobile_no1 : NULL;
@@ -254,6 +262,7 @@ class Staff_detailController extends Controller
         'updated_at'=> $updated_at,
         'updated_by'=> $updated_by,
     ];
+    // dd($staff_arr);
     DB::beginTransaction();
 
         $query = DB::table('staff_detail')->where('id', $decrypted_id)->update($staff_arr);
@@ -284,11 +293,11 @@ class Staff_detailController extends Controller
         // dd($request);
         $auth = Auth::user();
         $staff_profile = DB::table('staff_profile')->where('users_id',$auth->id)->first();
-        $college_name = DB::table('staff_college_mapping');
-        if($auth->role_id != 59 && !empty($staff_profile)){
-            $college_name = $college_name->where('staff_profile_id', $staff_profile->id);
-        }
-        $college_name =$college_name->pluck('college_name');
+        // $college_name = DB::table('staff_college_mapping');
+        // if($auth->role_id != 59 && !empty($staff_profile)){
+        //     $college_name = $college_name->where('staff_profile_id', $staff_profile->id);
+        // }
+        // $college_name =$college_name->pluck('college_name');
         $duColleges = DU_colleges::pluck('college_name');
 
 
@@ -344,7 +353,7 @@ class Staff_detailController extends Controller
 
         return view('staff_details/upload', [
             'current_menu' => $this->current_menu,
-            'college_name'=>$college_name,
+            // 'college_name'=>$college_name,
             'duColleges'=>$duColleges
         ]);
 }
@@ -357,7 +366,7 @@ public function get_staff_by_college(Request $request){
     $desig_filt = !empty($request->designation)?$request->designation:'';
     $current_url = !empty($request->current_url)?$request->current_url:'';
     $staff_profile = DB::table('staff_profile')->where('users_id',Auth::user()->id)->first();
-    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.college_name','staff_college_mapping.college_name');
+    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id');
     if(Auth::user()->role_id ==60 && !empty($staff_profile)){
         $staff_college_mapping = $staff_college_mapping->where('staff_profile_id', $staff_profile->id);
     }
@@ -404,7 +413,7 @@ public function get_staff_by_department(Request $request){
     $college_name = !empty($request->college_name)?$request->college_name:'';
     $designation = !empty($request->designation)?$request->designation:'';
      $staff_profile = DB::table('staff_profile')->where('users_id',Auth::user()->id)->first();
-    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.college_name','staff_college_mapping.college_name');
+    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id');
     if(Auth::user()->role_id ==60 && !empty($staff_profile)){
         $staff_college_mapping = $staff_college_mapping->where('staff_profile_id', $staff_profile->id);
     }
@@ -440,7 +449,7 @@ public function get_staff_by_designation(Request $request){
     $department = !empty($request->department)?$request->department:'';
     $college_name = !empty($request->college_name)?$request->college_name:'';
      $staff_profile = DB::table('staff_profile')->where('users_id',Auth::user()->id)->first();
-    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.college_name','staff_college_mapping.college_name');
+    $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id');
     if(Auth::user()->role_id ==60 && !empty($staff_profile)){
         $staff_college_mapping = $staff_college_mapping->where('staff_profile_id', $staff_profile->id);
     }
@@ -475,10 +484,13 @@ public function find_staff_by_contact_no(Request $request){
     $data = DB::table('staff_detail')->where('mobile_no1',$contact_no)->first();
     return response()->json($data);
 }
-// public function getstaffByCollege(Request $request){
-//     $college_name = !empty($request->college_name)?$request->college_name:'';
-//     $data = DB::table('staff_detail')->where('college_name',$college_name)->pluck('name','id');
-//     return response()->json($data);
-// }
+public function getStaffByGatNayak(Request $request){
+    $gat_nayak_id = !empty($request->gat_nayak_id)?$request->gat_nayak_id:'';
+    $data = DB::table('staff_college_mapping')
+              ->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id')
+              ->where('staff_college_mapping.staff_profile_id',$gat_nayak_id)
+              ->pluck('staff_detail.name','staff_detail_id');
+    return response()->json($data);
+}
 
 }

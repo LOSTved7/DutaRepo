@@ -28,7 +28,7 @@
 										data-placeholder="Select staff" required>
 										<option></option>
 										@foreach($staffProfiles as $key => $value)
-											<option value="{{$key}}" {{ count($staffProfiles) == 1 ? 'selected' : '' }}>{{$value}}</option>
+											<option value="{{$key}}" {{ ((count($staffProfiles) == 1) || Request::get('staff_profile_id')==$key) ? 'selected' : '' }}>{{$value}}</option>
 										@endforeach
 									</select>
 								</div>
@@ -80,7 +80,8 @@
 													<tr>
 														<td style="width:6%;">{{ $i++ }}</td>
 														<td>
-														<input type="checkbox" name="staff_id[]" id="" value="{{ $item->id }}"  {{ in_array($item->id, $exist) ? 'checked' : '' }} style="width:18px; height: 18px;">
+														<input type="checkbox" name="staff_id[]" id="" value="{{ $item->id }}"  
+														{{ ((!empty($exist[$item->id])) && ($exist[$item->id]==$staff_profile_id)) ? 'checked' : '' }} {{ ((!empty($exist[$item->id])) && ($exist[$item->id]!=$staff_profile_id)) ? 'disabled' : '' }} style="width:18px; height: 18px;">
 														{{ $full_name }}</td>
 														<td>{{ $department}}</td>
 													</tr>

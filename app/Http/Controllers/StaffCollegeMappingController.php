@@ -19,11 +19,15 @@ class StaffCollegeMappingController extends Controller
         $this->current_menu = 'StaffCollegeMapping';
     }
 
-    public function index()
+    public function index(Request $request)
     {
         // $staffProfiles = DB::table('staff_profile')->where('status',1)->pluck('name', 'id');
+        $gat_nayak = !empty($request->gat_nayak) ? $request->gat_nayak : '';
+        $staff_name = !empty($request->staff_name) ? $request->staff_name : '';
         $staffProfiles = DB::table('staff_detail')->where('status',1)->pluck('name', 'id');
-        $staff_Profile_id = DB::table('staff_profile')->where('users_id', Auth::user()->id)->pluck( 'id')->first();
+        $staff_Profile_id = DB::table('staff_profile')->where('status',1)->where('users_id', Auth::user()->id)->pluck( 'id')->first();
+        $staff_Profile_arr = DB::table('staff_profile')->where('status',1)->pluck( 'name','id');
+        $staff_detail_arr = DB::table('staff_detail')->where('status',1)->pluck( 'name','id');
         $data = DB::table('staff_college_mapping')
                   ->where('staff_college_mapping.status',1)
                   ->join('staff_detail', 'staff_college_mapping.staff_detail_id', '=', 'staff_detail.id')
@@ -31,11 +35,19 @@ class StaffCollegeMappingController extends Controller
         if(Auth::user()->role_id == 60) {
             $data->where('staff_profile_id', $staff_Profile_id);
         }
+        if(!empty($gat_nayak)) {
+            $data->where('staff_profile_id', $gat_nayak);
+        }
+        if(!empty($staff_name)) {
+            $data->where('staff_detail_id', $staff_name);
+        }
         $data = $data->get();
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,
             'data' => $data,
+            'staff_Profile_arr' => $staff_Profile_arr,
             'staffProfiles' => $staffProfiles,
+            'staff_detail_arr' => $staff_detail_arr,
         ]);
     }
 
@@ -43,16 +55,16 @@ class StaffCollegeMappingController extends Controller
     {
         $college_name = !empty($request->college_name)?$request->college_name:'';
         $staff_profile_id = !empty($request->staff_profile_id)?$request->staff_profile_id:'';
-        $staffProfiles = DB::table('staff_profile')->pluck('name', 'id');
+        $staffProfiles = DB::table('staff_profile')->where('status',1)->pluck('name', 'id');
         $duColleges = DU_colleges::pluck('college_name');
         if(Auth::user()->role_id==60){
-            $staffProfiles = DB::table('staff_profile')->where('users_id',Auth::user()->id)->pluck('name', 'id');
+            $staffProfiles = DB::table('staff_profile')->where('status',1)->where('users_id',Auth::user()->id)->pluck('name', 'id');
         }
-        $data = DB::table('staff_detail')->where('college_name',$college_name)->get();
+        $data = DB::table('staff_detail')->where('status',1)->where('college_name',$college_name)->get();
         $exist = DB::table('staff_college_mapping')
                   ->where('status',1)
-                  ->where('staff_profile_id', $staff_profile_id)
-                  ->pluck('staff_detail_id')->toArray();
+                //   ->where('staff_profile_id', $staff_profile_id)
+                  ->pluck('staff_profile_id','staff_detail_id');
         return view($this->current_menu . '.create', [
             'current_menu' => $this->current_menu,
             'staffProfiles' => $staffProfiles,
@@ -78,15 +90,14 @@ class StaffCollegeMappingController extends Controller
                 'created_at' => date('Y-m-d H:i:s'),
                 'created_by' => Auth::user()->id
             ];
-            DB::table('staff_college_mapping')
-            ->where('staff_profile_id', $staff_profile_id)
-            ->whereIn('staff_detail_id', $staff_id)
-            ->update([
-                    'status' => 9,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => Auth::user()->id
-                ]);
         }
+        DB::table('staff_college_mapping')
+        ->where('staff_profile_id', $staff_profile_id)
+        ->update([
+                'status' => 9,
+                'updated_at' => date('Y-m-d H:i:s'),
+                'updated_by' => Auth::user()->id
+            ]);
         // dd($data);
         DB::beginTransaction();
             DB::table('staff_college_mapping')->insert($data);
@@ -160,4 +171,91 @@ class StaffCollegeMappingController extends Controller
             Session::flash('message', 'Mapping deleted successfully.');
         return redirect()->route($this->current_menu . '.index');
     }
+    public function send_whatsapp_notification(Request $request)
+    {
+        $subject = !empty($request->subject) ? $request->subject : '';
+        $body = !empty($request->body) ? $request->body : '';
+        $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
+        $body = str_replace('    ', ' ', $request->input('body'));
+        $staffIds = $request->input('staff_ids');
+        $image_url = $request->input('image_url');
+        $numbers = !empty($selected_staff) ? json_decode($selected_staff) : [];
+        if (empty($numbers)) {
+            return back()->with('error', 'No WhatsApp numbers selected to send notification.');
+        }
+        // dd($numbers);
+        foreach ($numbers as $num) {
+            if (empty($num) || $num == "") {
+                return back()->with('error', 'WhatsApp Number Not Found to send notification.');
+            }
+        }
+        foreach ($numbers as $id => $mobile) {
+            if (!empty($mobile)) {
+
+                $api_key   = "446121c5221741959770a43777e4aea7";
+                $base_url  = "http://waba.smsidea.com/api/v1";
+                $phone_no  = "91".$mobile;
+
+                $message   = str_replace('    ', ' ', $body);
+                $image_url = !empty($image_url) ? $image_url : null;
+
+                $action = $image_url ? "sendImage" : "sendMessage";
+                if ($action == "sendMessage") {
+                    $json = [
+                        "key"     => $api_key,
+                        "to"      => $phone_no,
+                        "message" => $message
+                    ];
+                } else {
+                    $json = [
+                        "key"      => $api_key,
+                        "to"       => $phone_no,
+                        "url"      => $image_url,
+                        "caption"  => $message,
+                        "filename" => "File"
+                    ];
+                }
+
+                // Call API
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL            => $base_url . "/" . $action,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING       => "",
+                    CURLOPT_MAXREDIRS      => 10,
+                    CURLOPT_TIMEOUT        => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST  => "POST",
+                    CURLOPT_POSTFIELDS     => json_encode($json),
+                    CURLOPT_HTTPHEADER     => ["Content-Type: application/json"]
+                ]);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $decoded = json_decode($response);
+                if (!empty($decoded->ErrorMessage) && $decoded->ErrorMessage == "success") {
+                    DB::table("staff_detail")
+                        ->where("whatsapp", $mobile)
+                        ->update([
+                            "whatsapp_message_sent"      => 1,
+                            "whatsapp_message_sent_time" => date("Y-m-d H:i:s"),
+                        ]);
+                }
+            }
+        }
+
+        return back()->with('message', 'WhatsApp messages sent successfully.');
+    }
 }
+     
+
+
+
+
+
+
+
+
+

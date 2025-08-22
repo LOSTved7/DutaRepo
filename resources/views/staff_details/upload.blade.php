@@ -17,9 +17,6 @@
                                 <h4 class="">UPLOAD STAFF DETAILS</h4>
                             </div>
                             @php
-                            if(Auth::user()->role_id==59){
-                            $college_name= $duColleges;
-                            }
                             @endphp
                             <div class="col-md-6 text-end">
                                 <button onclick="downloadEmptyCSV();" class="btn btn-warning px-4">view Sample</button>
@@ -35,7 +32,7 @@
                                             name="college_name" id="college_name" required
                                             data-placeholder="Select College">
                                             <option></option>
-                                            @foreach($college_name as $college)
+                                            @foreach($duColleges as $college)
                                                 <option value="{{ $college }}">{{ $college }}
                                                 </option>
                                             @endforeach
