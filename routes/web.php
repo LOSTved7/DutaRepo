@@ -86,4 +86,5 @@ Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college
 Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
 Route::post('get_staff_by_designation', 'Staff_detailController@get_staff_by_designation')->name('get_staff_by_designation');
 Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_contact_no')->name('find_staff_by_contact_no');
+Route::post('getstaffByCollege', 'Staff_detailController@getstaffByCollege')->name('getstaffByCollege');
 ///////////////////     Hemant's Route ends here /////////////////////

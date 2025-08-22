@@ -156,6 +156,20 @@ class NewUserController extends Controller
 
                              
     }
+ public function destroy($id)
+    {
+        $decrypted_id=Crypt::DecryptString($id);
+        $data = DB::table('staff_profile')->where('id',$decrypted_id)->first();
+        DB::beginTransaction();
+        DB::table('users')->where('id',$data->users_id)->delete();
+        DB::table('staff_profile')->where('id',$decrypted_id)->update(['status'=>9]);
+        DB::commit();
+        Session::flash('message', 'Entry Deleted Successfully');
+       return redirect($this->current_menu);
+
+
+                             
+    }
 public function update(Request $request, $id)
 {
     $user_data = Auth::user();
