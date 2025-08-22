@@ -20,7 +20,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
 	<link href="assets/css/app.css" rel="stylesheet">
 	<link href="assets/css/icons.css" rel="stylesheet">
-	<title>College ERP</title>
+	<title>DUTA</title>
 </head>
 <?php 
 	// dd($request);
@@ -80,6 +80,7 @@
 							<div class="card-body">
 								<div class="p-4">
 									<div class="mb-3 text-center">
+										<h3>Sign In</h3>
 										@if(!empty($college_name))
 										<img src="{{asset($college_logo)}}" width="100" height="100" alt="" />
 										@else
@@ -130,9 +131,9 @@
 													<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
 													<label class="form-check-label" for="flexSwitchCheckChecked">Remember Me</label>
 												</div>
-											--}}
+											
 											</div>
-											<div class="col-md-6 text-end">	<a href="{{url('forgot_password')}}">Forgot Password ?</a>
+											<div class="col-md-6 text-end">	<a href="{{url('forgot_password')}}">Forgot Password ?</a>--}}
 											</div>
 											<div class="col-12">
 												<div class="d-grid">
