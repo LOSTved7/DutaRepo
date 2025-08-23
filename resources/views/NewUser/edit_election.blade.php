@@ -33,7 +33,7 @@ User
                                     <select class="form-select single-select-clear-field" name="department" id="department" required data-placeholder="Select Department">
                                         <option></option>
                                         @foreach($department_mast as $key => $value)
-									        <option value="{{ $value }}">{{ $value }}</option>
+									        <option value="{{ $value }}" {{ $data->department_name==$value?'selected':'' }}>{{ $value }}</option>
 									      @endforeach
                                     </select>
                                 </div>
