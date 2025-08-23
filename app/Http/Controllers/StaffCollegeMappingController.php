@@ -26,7 +26,7 @@ class StaffCollegeMappingController extends Controller
         $staff_name = !empty($request->staff_name) ? $request->staff_name : '';
         $staffProfiles = DB::table('staff_detail')->where('status',1)->pluck('name', 'id');
         $staff_Profile_id = DB::table('staff_profile')->where('status',1)->where('users_id', Auth::user()->id)->pluck( 'id')->first();
-        $staff_Profile_arr = DB::table('staff_profile')->where('status',1)->pluck( 'name','id');
+        $staff_Profile_arr = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
         $staff_detail_arr = DB::table('staff_detail')->where('status',1)->pluck( 'name','id');
         $data = DB::table('staff_college_mapping')
                   ->where('staff_college_mapping.status',1)
@@ -56,10 +56,10 @@ class StaffCollegeMappingController extends Controller
     {
         $college_name = !empty($request->college_name)?$request->college_name:'';
         $staff_profile_id = !empty($request->staff_profile_id)?$request->staff_profile_id:'';
-        $staffProfiles = DB::table('staff_profile')->where('status',1)->pluck('name', 'id');
+        $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
         $duColleges = DU_colleges::pluck('college_name');
         if(Auth::user()->role_id==60){
-            $staffProfiles = DB::table('staff_profile')->where('status',1)->where('users_id',Auth::user()->id)->pluck('name', 'id');
+            $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->where('users_id',Auth::user()->id)->pluck( 'staff_profile.name','staff_profile.id');
         }
         $data = DB::table('staff_detail')->where('status',1)->where('college_name',$college_name)->get();
         $exist = DB::table('staff_college_mapping')
