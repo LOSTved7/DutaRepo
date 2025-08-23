@@ -73,7 +73,7 @@ USERMAST
 
 						
 
-							<a href="{{route($current_menu.'.create')}}" class="btn btn-primary px-4">ADD USER</a>
+							<a href="{{route($current_menu.'.create')}}" class="btn btn-primary px-4">ADD GAT </a>
 							
 
 							  

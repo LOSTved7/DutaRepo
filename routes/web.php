@@ -78,6 +78,7 @@ Route::get('server_vars', function () {
 
     dd($var_arr, $_SERVER);
 });
+        Route::resource('RoleMast', 'RoleController');
 
 Route::resource('staff_details', 'Staff_detailController');
 Route::any('staff_upload', 'Staff_detailController@upload')->name('staff_upload');
@@ -89,4 +90,11 @@ Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_co
 Route::post('getStaffByGatNayak', 'Staff_detailController@getStaffByGatNayak')->name('getStaffByGatNayak');
 Route::post('send_whatsapp_notification', 'StaffCollegeMappingController@send_whatsapp_notification')->name('send.sms');
 Route::post('send_mail_notification', 'StaffCollegeMappingController@send_mail_notification')->name('send.mail');
+Route::resource('CollegeMaster', 'CollegeMasterController');
+    Route::post('CollegeMaster/importData', 'CollegeMasterController@importData')->name('college.importData');
+       
+    Route::resource('ModuleMaster', 'ModuleMasterController');
+    Route::resource('ModuleAssigning', 'ModuleAssigningController');
+    Route::resource('GatNayakCollegeMapping', 'GatNayakCollegeMappingController');
+
 ///////////////////     Hemant's Route ends here /////////////////////

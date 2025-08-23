@@ -28,11 +28,11 @@ class Staff_detailController extends Controller
         $designation = !empty($request->designation) ? $request->designation : NULL;
         $user_profile = DB::table('users')->whereIn('role_id',[59,60])->pluck('name', 'id');
         $staff_profile = DB::table('staff_profile')->where('users_id',$users_id)->first();
-        $staff_college_mapping = DB::table('staff_college_mapping')->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id');
+        $staff_college_mapping = DB::table('gat_nayak_college_mapping')->join('staff_profile','staff_profile.id','gat_nayak_college_mapping.staff_profile_id');
         if(Auth::user()->role_id ==60 && !empty($staff_profile)){
             $staff_college_mapping = $staff_college_mapping->where('staff_profile_id', $staff_profile->id);
         }
-        $staff_college_mapping =$staff_college_mapping->distinct()->pluck('college_name');
+        $staff_college_mapping =$staff_college_mapping->distinct()->pluck('gat_nayak_college_mapping.college_name');
        $data = DB::table('staff_detail')
                 ->where('status',1);
 
@@ -136,6 +136,7 @@ class Staff_detailController extends Controller
         $department = !empty($request->department) ? $request->department : NULL;
         $designation = !empty($request->designation) ? $request->designation : NULL;
         $status = !empty($request->status) ? $request->status : 1;
+        $college_code = !empty($request->college_code) ? $request->college_code : 1;
         $exsist = !empty($request->id) ? $request->id : NULL;
          $whatsapp = !empty($request->whatsapp) ? $request->whatsapp : NULL;
         if(empty($whatsapp)){
@@ -143,6 +144,10 @@ class Staff_detailController extends Controller
         }
         $created_at = date('Y-m-d H:i:s');
         $created_by = Auth::user()->id;
+         $college_code_exist = DB::table('staff_detail')->where('id','!=',$exsist)->where('college_code', $college_code)->where('status',1)->first();
+            if($college_code_exist){
+                return redirect()->back()->with('error','College code already exist.');
+            }
        $Arr = [
             'name'=> $name,
             'mobile_no1'=> $mobile_no1,
@@ -156,6 +161,7 @@ class Staff_detailController extends Controller
             'department'=> $department,
             'designation'=> $designation,
             'status'=> $status,
+            'college_code'=> $college_code,
             'created_at'=> $created_at,
             'created_by'=> $created_by,
         ];
@@ -173,6 +179,7 @@ class Staff_detailController extends Controller
                             'department'=> $department,
                             'designation'=> $designation,
                             'status'=> $status,
+                            'college_code'=> $college_code,
                             'updated_at'=> $created_at,
                             'updated_by'=> $created_by,
                         ]);
@@ -200,22 +207,42 @@ class Staff_detailController extends Controller
     public function edit($id)
     {
         $decrypted_id = Crypt::decryptString($id);
+        $staff_profile_id = DB::table('staff_profile')->where('users_id',Auth::user()->id)->pluck('id')->first();
         $data = DB::table('staff_detail')
             ->where('id', $decrypted_id)
             ->where('status', '!=', 9)
             ->first();
-                $department = DB::table('department_mast')->where('status', 1)->pluck('department_name', 'id');
+        // $department = DB::table('department_mast')->where('status', 1)->pluck('department_name', 'id');
 
         if (!$data) {
             return redirect()->back()->with('error', 'Staff not found.');
         }
         $encrypted_id = $id;
-
+        $duColleges = DU_colleges::pluck('college_name');
+        if(Auth::user()->role_id==60){
+            $duColleges = DB::table('gat_nayak_college_mapping')
+                          ->where('staff_profile_id',$staff_profile_id)
+                          ->pluck('college_name','college_name');
+        }
+        $department_data = DB::table('staff_detail');
+            if(!empty($data->college_name)){
+                $department_data ->where('college_name',$data->college_name);
+            }
+            $department_data = $department_data->groupBy('department')
+                    ->pluck('department')->toArray();
+ $designation_data = DB::table('staff_detail');
+    if(!empty($data->college_name)){
+           $designation_data ->where('college_name',$data->college_name);
+    }
+     $designation_data = $designation_data->groupBy('designation')
+            ->pluck('designation')->toArray();
         return view('staff_details.edit', [
             'data' => $data,
             'current_menu' => $this->current_menu,
             'encrypted_id' => $encrypted_id,
-            'department' => $department,
+            'department_data' => $department_data,
+            'duColleges' => $duColleges,
+            'designation_data' => $designation_data,
         ]);
     }
     
@@ -234,10 +261,15 @@ class Staff_detailController extends Controller
     $department = !empty($request->department) ? $request->department : NULL;
     $designation = !empty($request->designation) ? $request->designation : NULL;
     $status = !empty($request->status) ? $request->status : 1;
+    $college_code = !empty($request->college_code) ? $request->college_code : 1;
     $whatsapp = !empty($request->whatsapp) ? $request->whatsapp : NULL;
     if(empty($whatsapp)){
         return redirect()->back()->with('error','WhatsApp number is required.');
     }
+      $college_code_exist = DB::table('staff_detail')->where('id','!=',$decrypted_id)->where('college_code', $college_code)->where('status',1)->first();
+            if($college_code_exist){
+                return redirect()->back()->with('error','College code already exist.');
+            }
     $updated_at = date('Y-m-d H:i:s');
     $updated_by = Auth::user()->id;
 
@@ -259,6 +291,7 @@ class Staff_detailController extends Controller
         'department'=> $department,
         'designation'=> $designation,
         'status'=> $status,
+        'college_code'=> $college_code,
         'updated_at'=> $updated_at,
         'updated_by'=> $updated_by,
     ];
@@ -290,18 +323,9 @@ class Staff_detailController extends Controller
     return redirect()->route($this->current_menu.'.index');
     }
     public function upload(Request $request){
-        // dd($request);
         $auth = Auth::user();
         $staff_profile = DB::table('staff_profile')->where('users_id',$auth->id)->first();
-        // $college_name = DB::table('staff_college_mapping');
-        // if($auth->role_id != 59 && !empty($staff_profile)){
-        //     $college_name = $college_name->where('staff_profile_id', $staff_profile->id);
-        // }
-        // $college_name =$college_name->pluck('college_name');
         $duColleges = DU_colleges::pluck('college_name');
-
-
-
         if($request->hasFile('excel')){
                         $college_name = !empty($request->college_name) ? $request->college_name : NULL;
                         if(empty($college_name)){
@@ -336,6 +360,7 @@ class Staff_detailController extends Controller
                                 'mobile_no2'=> !empty($data[7])?$data[7]:'',
                                 'mobile_no3'=> !empty($data[8])?$data[8]:'',
                                 'whatsapp'=> !empty($data[9])?$data[9]:'',
+                                'college_code'=> !empty($data[10])?$data[10]:'',
                                 'status'=> 1,
                                 'created_at'=> date('Y-m-d H:i:s'),
                                 'created_by'=> Auth::user()->id,

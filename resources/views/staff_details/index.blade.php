@@ -78,12 +78,12 @@ STAFF DETAILS
 							<tr>
 								<th>S.No.</th>
 								<th>College Name</th>
+								<th>College Code</th>
 								<th>Name</th>
 								<th>Mobile No</th>
 								<th>Email</th>
 								<th>Department</th>
 								<th>Designation</th>
-								<th>Grade</th>
 								@if(Auth::user()->role_id == '59')
 								<th>Created By</th>
 								@endif
@@ -99,13 +99,13 @@ STAFF DETAILS
 								<tr>
 									<td>{{ $i++ }}</td>
 									<td>{{ !empty($staff->college_name)?$staff->college_name:''}}</td>
+									<td>{{ !empty($staff->college_code)?$staff->college_code:''}}</td>
 									<td>{{ !empty($staff->name)?$staff->name:''}}</td>
 									<td>{{ !empty($staff->mobile_no1)?$staff->mobile_no1:''}}</td>
 									<td>{{ !empty($staff->email1)?$staff->email1:''}}</td>
 									<td>{{ !empty($staff->department)?$staff->department:''}}</td>
 									<td>{{ !empty($staff->designation)?$staff->designation:''}}</td>
-									<td>{{ !empty($staff->grade)?$staff->grade:''}}</td>
-								@if(Auth::user()->role_id == '59')
+								@if(Auth::user()->role_id ==59)
 									<td>{{ !empty($user_profile[$staff->created_by])?$user_profile[$staff->created_by]:''}}</td>
 								@endif
 									<td>

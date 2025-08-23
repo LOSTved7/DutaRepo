@@ -21,7 +21,12 @@ Edit Staff
 
 									<div class="col-md-4">
 										<label for="college_id" class="form-label">College<font color="red"><b>*</b></font></label>
-										<input class="form-control" name="college_name" id="college_name" required value="{{ !empty($data->college_name)?$data->college_name:'' }}" placeholder="Enter College Name">
+										<select class="form-select single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College Name">
+											<option></option>
+											@foreach ($duColleges as $value )
+											<option value="{{ $value }}" {{$data->college_name==$value?'selected':''}}>{{ $value }}</option>
+											@endforeach
+											</select>
 									</div>
 
 									<div class="col-md-4">
@@ -31,15 +36,27 @@ Edit Staff
 									
 									<div class="col-md-4 mt-2">
 										<label class="form-label">Department</label>
-										<input name="department" class="form-control" data-placeholder="Enter Department" maxlength="100" value="{{ !empty($data->department)?$data->department:'' }}">
+										<select class="form-select single-select-clear-field" name="department" data-placeholder="Enter Department" maxlength="100" >
+											<option></option>
+											@foreach ($department_data as $value )
+											<option value="{{ $value }}" {{ $data->department==$value?'selected':'' }}>{{ $value }}</option>
+											
+											@endforeach
+											</select>
 										
 									</div>
 									
-									<div class="col-md-4  mt-2">
+								<div class="col-md-4  mt-2">
 										<label class="form-label">Designation</label>
-										<input name="designation" class="form-control" data-placeholder="select Designation" maxlength="100" value="{{ !empty($data->designation)?$data->designation:'' }}">
+										<select name="designation" class="form-select single-select-clear-field" data-placeholder="select Designation" maxlength="100">
+											<option></option>
+											@foreach ($designation_data as $value )
+											<option value="{{ $value }}" {{ $data->designation==$value?'selected':'' }}>{{ $value }}</option>
+											
+											@endforeach
+											</select>
 										
-									</div> 
+									</div>
 									<div class="col-md-4 mt-2">
 										<label class="form-label">Email</label>
 										<input type="email" name="email1" class="form-control" value="{{ !empty($data->email1)?$data->email1:'' }}" placeholder="Enter Email">
@@ -90,7 +107,7 @@ Edit Staff
 										</div>
 									</div>
 
-									<div class="col-md-4 mt-2">
+								{{--	<div class="col-md-4 mt-2">
 										<label class="form-label">Grade</label>
 										<select class="form-select single-select-clear-field" name="grade" data-placeholder="select">
 											<option></option>
@@ -99,7 +116,10 @@ Edit Staff
 											@endforeach
 										</select>
 									</div>
-
+--}}								<div class="col-md-4 mt-2">
+										<label class="form-label">College Code</label>
+										<input type="text" name="college_code" id="college_code" class="form-control" placeholder="Enter College code" maxlength="50" value="{{ !empty($data->college_code)?$data->college_code:'' }}">
+									</div>
 									<div class="col-md-4 mt-2">
 										<label class="form-label">Status</label>
 										<select class="form-select single-select-clear-field" name="status">

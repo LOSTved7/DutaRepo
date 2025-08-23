@@ -82,10 +82,11 @@ class NewUserController extends Controller
     $department = !empty($request->department) ? $request->department : null;
     $salutation = !empty($request->salutation) ? $request->salutation : '';
     $gender = !empty($request->gender) ? $request->gender : '';
-    $first_name = !empty($request->first_name) ? $request->first_name : '';
-    $middle_name = !empty($request->middle_name) ? $request->middle_name : '';
-    $last_name = !empty($request->last_name) ? $request->last_name : '';
-    $full_name = trim($salutation . ' ' . $first_name . ' ' . $middle_name . ' ' . $last_name);
+    // $first_name = !empty($request->first_name) ? $request->first_name : '';
+    // $middle_name = !empty($request->middle_name) ? $request->middle_name : '';
+    // $last_name = !empty($request->last_name) ? $request->last_name : '';
+    // $full_name = trim($salutation . ' ' . $first_name . ' ' . $middle_name . ' ' . $last_name);
+    $fullname = !empty($request->fullname) ? $request->fullname : '';
     $employment_type = !empty($request->employment_type) ? $request->employment_type : null;
     $contact_no = !empty($request->contact_no) ? $request->contact_no : null;
     $email = !empty($request->email) ? $request->email : null;
@@ -95,11 +96,11 @@ class NewUserController extends Controller
     $comments = !empty($request->comments) ? $request->comments : null;
     $username = $contact_no;
     $password = $contact_no;
-
+    $existing_user = DB::table('staff_profile')->where('mobile1',$contact_no)->where('email', $username)->first();
     DB::beginTransaction();
 
         $user_arr = [
-            'name' => $full_name,
+            'name' => $fullname,
             'email' => $username,
             'email_verified_at' => null,
             'password' => Hash::make($password),
@@ -111,21 +112,21 @@ class NewUserController extends Controller
         // Create user profile record
         $profile_arr = [
             'users_id' => $user->id,
-            'name' => $full_name,
-            'salutation' => $salutation,
-            'gender' => $gender,
-            'first_name' => $first_name,
-            'middle_name' => $last_name,
-            'last_name' => $last_name,
+            'name' => $fullname,
+            // 'salutation' => $salutation,
+            // 'gender' => $gender,
+            // 'first_name' => $first_name,
+            // 'middle_name' => $last_name,
+            // 'last_name' => $last_name,
             'college_name' => $college_name,
             'department_name' => $department,
             'contact_no' => $contact_no,
-            'email' => $email,
-            'grade' => $grade,
-            'sangathan' => $sangathan,
-            'employment_type' => $employment_type,
+            // 'email' => $email,
+            // 'grade' => $grade,
+            // 'sangathan' => $sangathan,
+            // 'employment_type' => $employment_type,
             'status' => $status,
-            'comments' => $comments,
+            // 'comments' => $comments,
             'created_by' => $user_id,
             'created_at' =>  date('Y-m-d H:i:s'),
         ];
@@ -177,19 +178,19 @@ public function update(Request $request, $id)
 
     $college_name = !empty($request->college_name) ? $request->college_name : null;
     $department = !empty($request->department) ? $request->department : null;
-    $salutation = !empty($request->salutation) ? $request->salutation : '';
-    $gender = !empty($request->gender) ? $request->gender : '';
-    $first_name = !empty($request->first_name) ? $request->first_name : '';
-    $middle_name = !empty($request->middle_name) ? $request->middle_name : '';
-    $last_name = !empty($request->last_name) ? $request->last_name : '';
-    $full_name = trim($salutation . ' ' . $first_name . ' ' . $middle_name . ' ' . $last_name);
-    $employment_type = !empty($request->employment_type) ? $request->employment_type : null;
+    // $salutation = !empty($request->salutation) ? $request->salutation : '';
+    // $gender = !empty($request->gender) ? $request->gender : '';
+    $full_name = !empty($request->full_name) ? $request->full_name : '';
+    // $middle_name = !empty($request->middle_name) ? $request->middle_name : '';
+    // $last_name = !empty($request->last_name) ? $request->last_name : '';
+    // $full_name = trim($salutation . ' ' . $first_name . ' ' . $middle_name . ' ' . $last_name);
+    // $employment_type = !empty($request->employment_type) ? $request->employment_type : null;
     $contact_no = !empty($request->contact_no) ? $request->contact_no : null;
-    $email = !empty($request->email) ? $request->email : null;
-    $grade = !empty($request->grade) ? $request->grade : null;
-    $sangathan = !empty($request->sangathan) ? $request->sangathan : null;
+    // $email = !empty($request->email) ? $request->email : null;
+    // $grade = !empty($request->grade) ? $request->grade : null;
+    // $sangathan = !empty($request->sangathan) ? $request->sangathan : null;
     $status = !empty($request->status) ? $request->status : 1;
-    $comments = !empty($request->comments) ? $request->comments : null;
+    // $comments = !empty($request->comments) ? $request->comments : null;
 
     DB::beginTransaction();
         $user =  DB::table('staff_profile')->where('id',$id)->first();
@@ -203,20 +204,10 @@ public function update(Request $request, $id)
             ->where('id', $id)
             ->update([
                 'name' => $full_name,
-                'salutation' => $salutation,
-                'gender' => $gender,
-                'first_name' => $first_name,
-                'middle_name' => $middle_name,
-                'last_name' => $last_name,
                 'college_name' => $college_name,
                 'department_name' => $department,
                 'contact_no' => $contact_no,
-                'email' => $email,
-                'grade' => $grade,
-                'sangathan' => $sangathan,
-                'employment_type' => $employment_type,
                 'status' => $status,
-                'comments' => $comments,
                 'updated_by' => $user_id,
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);

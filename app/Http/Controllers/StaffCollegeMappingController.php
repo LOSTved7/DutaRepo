@@ -26,7 +26,13 @@ class StaffCollegeMappingController extends Controller
         $staff_name = !empty($request->staff_name) ? $request->staff_name : '';
         $staffProfiles = DB::table('staff_detail')->where('status',1)->pluck('name', 'id');
         $staff_Profile_id = DB::table('staff_profile')->where('status',1)->where('users_id', Auth::user()->id)->pluck( 'id')->first();
-        $staff_Profile_arr = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
+        $staff_Profile_arr = DB::table('staff_profile')
+                               ->join('users', 'staff_profile.users_id', '=', 'users.id')
+                               ->where('staff_profile.status',1);
+                                       if(Auth::user()->role_id == 60) {
+                                             $staff_Profile_arr->where('users_id', Auth::user()->id);
+                                       }
+                               $staff_Profile_arr =$staff_Profile_arr->pluck( 'staff_profile.name','staff_profile.id');
         $staff_detail_arr = DB::table('staff_detail')->where('status',1)->pluck( 'name','id');
         $data = DB::table('staff_college_mapping')
                   ->where('staff_college_mapping.status',1)
@@ -58,12 +64,14 @@ class StaffCollegeMappingController extends Controller
         $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
         $duColleges = DU_colleges::pluck('college_name');
         if(Auth::user()->role_id==60){
+            $duColleges = DB::table('gat_nayak_college_mapping')
+                          ->where('staff_profile_id',$staff_profile_id)
+                          ->pluck('college_name','college_name');
             $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->where('users_id',Auth::user()->id)->pluck( 'staff_profile.name','staff_profile.id');
         }
         $data = DB::table('staff_detail')->where('status',1)->where('college_name',$college_name)->get();
         $exist = DB::table('staff_college_mapping')
                   ->where('status',1)
-                //   ->where('staff_profile_id', $staff_profile_id)
                   ->pluck('staff_profile_id','staff_detail_id');
         return view($this->current_menu . '.create', [
             'current_menu' => $this->current_menu,

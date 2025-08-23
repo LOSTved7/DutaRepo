@@ -55,19 +55,19 @@ CREATE STAFF
 									
 									
 									<div class="col-md-4 mt-2">
-										<label class="form-label">Department<font color="red"><b>*</b></font></label>
-										<select name="department" id="department" class="form-select single-select-clear-field" required data-placeholder="Select Department" maxlength="100">
+										<label class="form-label">Department</label>
+										<select name="department" id="department" class="form-select single-select-clear-field" data-placeholder="Select Department" maxlength="100">
 											<option></option>
 										</select>
 										
 									</div>
 									
 									<div class="col-md-4  mt-2">
-										<label class="form-label">Designation<font color="red"><b>*</b></font></label>
-										<select name="designation" id="designation" class="form-select single-select-clear-field" required data-placeholder="select Designation" maxlength="100">
+										<label class="form-label">Designation</label>
+										<select name="designation" id="designation" class="form-select single-select-clear-field" data-placeholder="select Designation" maxlength="100">
 											<option></option>
 										</select>
-									</div> 
+									</div>
 									<div class="col-md-4 mt-2">
 										<label class="form-label">Email</label>
 										<input type="email" name="email1" class="form-control" placeholder="Enter Email" maxlength="100">
@@ -117,7 +117,7 @@ CREATE STAFF
 											<small id="mobileError3" class="text-danger d-none">Please enter a valid 10-digit Contact no.</small>
 										</div>
 									</div>
-									<div class="col-md-4 mt-2">
+									{{--<div class="col-md-4 mt-2">
 										<label class="form-label">Grade</label>
 										<select class="form-select single-select-clear-field" name="grade" id="grade" data-placeholder="Select Grade">
 											<option ></option>
@@ -126,6 +126,10 @@ CREATE STAFF
 											<option value="C">C</option>
 											<option value="D">D</option>
 										</select>
+									</div>--}}
+										<div class="col-md-4 mt-2">
+										<label class="form-label">College Code</label>
+										<input type="text" name="college_code" id="college_code" class="form-control" placeholder="Enter College code" maxlength="50">
 									</div>
 									<div class="col-md-4 mt-2">
 										<label for="status" class="form-label">Status</label>
@@ -321,6 +325,7 @@ function find_by_contact_no(){
 					$('#mobile_no2').val(data.mobile_no2 || '');
 					$('#mobile_no3').val(data.mobile_no3 || '');
 					$('#mobile_no3').val(data.mobile_no3 || '');
+					$('#college_code').val(data.college_code || '');
 					$('#email1').val(data.email1 || '');
 					$('#email2').val(data.email2 || '');
 					console.log(data.whatsapp);

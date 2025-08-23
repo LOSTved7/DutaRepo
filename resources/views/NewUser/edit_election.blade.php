@@ -18,7 +18,7 @@ User
                             @method('PUT')
 
                             <div class="row g-3">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="college_name" class="form-label">College<font color="red"><b>*</b></font></label>
                                     <select class="form-select single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College">
                                         <option></option>
@@ -28,7 +28,7 @@ User
                                     </select>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label for="department" class="form-label">Department<font color="red"><b>*</b></font></label>
                                     <select class="form-select single-select-clear-field" name="department" id="department" required data-placeholder="Select Department">
                                         <option></option>
@@ -36,7 +36,7 @@ User
 									        <option value="{{ $value }}" {{ $data->department_name==$value?'selected':'' }}>{{ $value }}</option>
 									      @endforeach
                                     </select>
-                                </div>
+                                </div>{{--
 
                                 <div class="col-md-3">
                                     <label for="salutation" class="form-label">Salutation<font color="red"><b>*</b></font></label>
@@ -47,11 +47,11 @@ User
                                         @endforeach
                                     </select>
                                 </div>
-
-                                <div class="col-md-3">
-                                    <label for="first_name" class="form-label">First Name<font color="red"><b>*</b></font></label>
-                                    <input type="text" name="first_name" id="first_name" class="form-control" value="{{ $data->first_name }}" required>
-                                </div>
+--}}
+                                <div class="col-md-4">
+                                    <label for="first_name" class="form-label">Full Name<font color="red"><b>*</b></font></label>
+                                    <input type="text" name="full_name" id="full_name" class="form-control" value="{{ $data->name }}" required>
+                                </div>{{--
 
                                 <div class="col-md-3">
                                     <label for="middle_name" class="form-label">Middle Name</label>
@@ -62,7 +62,6 @@ User
                                     <label for="last_name" class="form-label">Last Name<font color="red"><b>*</b></font></label>
                                     <input type="text" name="last_name" id="last_name" class="form-control" value="{{ $data->last_name }}" required>
                                 </div>
-
                                 <div class="col-md-3">
                                     <label for="employment_type" class="form-label">Employment Type<font color="red"><b>*</b></font></label>
                                     <select class="form-select single-select-clear-field" name="employment_type" id="employment_type" required>
@@ -71,12 +70,13 @@ User
                                         @endforeach
                                     </select>
                                 </div>
+--}}
 
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <label for="contact_no" class="form-label">Contact No.<font color="red"><b>*</b></font></label>
                                     <input type="text" name="contact_no" id="contact_no" class="form-control" value="{{ $data->contact_no }}" required>
                                 </div>
-                                <div class="col-md-3">
+                               {{-- <div class="col-md-3">
 									    <label for="salutation" class="form-label">Gender<font color="red"><b>*</b></font></label>
 									    <select name="gender" id="gender" class="form-select single-select-clear-field" required>
 									      <option value="">Select</option>
@@ -105,7 +105,7 @@ User
                                             <option value="{{ $sangathan }}" {{ $data->sangathan == $sangathan ? 'selected' : '' }}>{{ $sangathan }}</option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div>--}}
 
                                 <div class="col-md-2">
                                     <label for="status" class="form-label">Status<font color="red"><b>*</b></font></label>
@@ -115,10 +115,10 @@ User
                                     </select>
                                 </div>
 
-                                <div class="col-md-4">
+                                {{--<div class="col-md-4">
                                     <label for="comments" class="form-label">Comments</label>
                                     <textarea name="comments" id="comments" class="form-control" rows="2">{{ $data->comments }}</textarea>
-                                </div>
+                                </div>--}}
                             </div>
 
                             <div class="col-md-12" style="margin-top: 10px;">

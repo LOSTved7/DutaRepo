@@ -28,14 +28,7 @@ Student
                 <div class="card-body">
                     <h5 class="mb-4">ASSIGN MODULE </h5>
                         <div class="form-group row">
-                            <div class="col-md-4">
-                            <label for="single-select-field" class="form-label">College</label>
-                             <select class="form-select single-select-field" name="college_id"  data-placeholder="Select College" >
-                             @foreach($college_mast as $key => $value)
-                            <option value="{{$key}} ">{{$value}}</option>
-                            @endforeach
-                             </select>
-                         </div>
+                            
                         <div class="col-md-4">
                             <label for="single-select-clear-field" class="form-label">Role</label>
                              <select class="form-select single-select-clear-field" name="role_id"  data-placeholder="Select Role" disabled>
