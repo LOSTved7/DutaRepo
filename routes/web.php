@@ -88,4 +88,5 @@ Route::post('get_staff_by_designation', 'Staff_detailController@get_staff_by_des
 Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_contact_no')->name('find_staff_by_contact_no');
 Route::post('getStaffByGatNayak', 'Staff_detailController@getStaffByGatNayak')->name('getStaffByGatNayak');
 Route::post('send_whatsapp_notification', 'StaffCollegeMappingController@send_whatsapp_notification')->name('send.sms');
+Route::post('send_mail_notification', 'StaffCollegeMappingController@send_mail_notification')->name('send.mail');
 ///////////////////     Hemant's Route ends here /////////////////////

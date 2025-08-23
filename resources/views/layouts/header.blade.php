@@ -143,12 +143,10 @@
         <button id="sweetalertbtn" onclick="sweetalert()" style="display:none">see sweetalert</button>
     </div>
 	<div class="wrapper">
-		<!--sidebar wrapper -->
 		<div class="sidebar-wrapper" data-simplebar="true">
 			<div class="sidebar-header">
 				<a href="{{ url('dashboard') }}" style="text-decoration: none;">
 				    <div style="display: flex; align-items: center;">
-				        <!-- <img src="{{ asset($logo) }}" class="logo-icon" alt="Org. Logo"> -->
 				        <h4 class="logo-text" style="color: #3e3f94; margin-left: 10px;">{{ strtoupper($short_name) }}</h4>
 				    </div>
 				</a>
@@ -157,17 +155,10 @@
 				</div>
 
 			 </div>
-			<!--navigation-->
 			<ul class="metismenu" id="menu">
 				@include('menu')
 			</ul>
-
-
-
-			<!--end navigation-->
 		</div>
-		<!--end sidebar wrapper -->
-		<!--start header -->
 		<header>
 			<div class="topbar d-flex align-items-center">
 				<nav class="navbar navbar-expand gap-3">
