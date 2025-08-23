@@ -326,6 +326,14 @@ class Staff_detailController extends Controller
         $auth = Auth::user();
         $staff_profile = DB::table('staff_profile')->where('users_id',$auth->id)->first();
         $duColleges = DU_colleges::pluck('college_name');
+         if(Auth::user()->role_id==60){
+            $staff_profile_id = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.users_id',Auth::user()->id)->pluck( 'staff_profile.id');
+
+            $duColleges = DB::table('gat_nayak_college_mapping')
+                          ->where('staff_profile_id',$staff_profile_id)
+                          ->where('status',1) 
+                          ->pluck('college_name');
+        }
         if($request->hasFile('excel')){
                         $college_name = !empty($request->college_name) ? $request->college_name : NULL;
                         if(empty($college_name)){

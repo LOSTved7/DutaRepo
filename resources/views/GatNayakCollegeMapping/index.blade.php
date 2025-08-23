@@ -38,14 +38,11 @@
                                 @foreach($grouped as $staffId => $items)
                                     @php
                                         $encid = Crypt::encryptString($staffId);
-                                        $staff = DB::table('staff_profile')->where('id', $staffId)->first();
-                                        $full_name = trim(($staff->first_name ?? '') . ' ' . ($staff->middle_name ?? '') . ' ' . ($staff->last_name ?? ''));
                                         $colleges = $items->pluck('college_name')->filter()->unique()->implode('<br>');
                                     @endphp
                                     <tr>
                                         <td>{{ $i++ }}</td>
-                                        <td>{{ $full_name }}</td>
-                                        <td>{{ $staff->college_name ?? '-' }}</td>
+                                        <td>{{ !empty($staffProfiles[$staffId])?$staffProfiles[$staffId]:'' }}</td>
                                         <td>{!! $colleges ?: '<span style="color:red;">No Colleges Mapped</span>' !!}</td>
                                         <td>
                                             <a href="{{ url($current_menu.'/'.$encid.'/edit') }}" class="btn btn-sm btn-warning">Edit</a>

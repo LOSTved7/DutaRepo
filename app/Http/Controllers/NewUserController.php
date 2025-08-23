@@ -96,7 +96,7 @@ class NewUserController extends Controller
     $comments = !empty($request->comments) ? $request->comments : null;
     $username = $contact_no;
     $password = $contact_no;
-    $existing_user = DB::table('staff_profile')->where('mobile1',$contact_no)->where('email', $username)->first();
+    $existing_user = DB::table('staff_profile')->where('contact_no',$contact_no)->where('email', $username)->first();
     DB::beginTransaction();
 
         $user_arr = [

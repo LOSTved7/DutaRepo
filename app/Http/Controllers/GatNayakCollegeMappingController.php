@@ -21,7 +21,8 @@ class GatNayakCollegeMappingController extends Controller
 
     public function index()
     {
-        $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
+        $staffProfiles = DB::table('staff_profile')
+                           ->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
         $data = DB::table('gat_nayak_college_mapping')->where('status',1)->get();
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,

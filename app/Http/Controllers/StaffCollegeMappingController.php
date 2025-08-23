@@ -63,10 +63,14 @@ class StaffCollegeMappingController extends Controller
         $staff_profile_id = !empty($request->staff_profile_id)?$request->staff_profile_id:'';
         $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
         $duColleges = DU_colleges::pluck('college_name');
+        // dd($staff_profile_id);
         if(Auth::user()->role_id==60){
+            
+            $staff_profile_id_to_match = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.users_id',Auth::user()->id)->pluck( 'staff_profile.id');
             $duColleges = DB::table('gat_nayak_college_mapping')
-                          ->where('staff_profile_id',$staff_profile_id)
-                          ->pluck('college_name','college_name');
+                          ->where('staff_profile_id',$staff_profile_id_to_match)
+                          ->where('status',1) 
+                          ->pluck('college_name');
             $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->where('users_id',Auth::user()->id)->pluck( 'staff_profile.name','staff_profile.id');
         }
         $data = DB::table('staff_detail')->where('status',1)->where('college_name',$college_name)->get();
@@ -106,7 +110,6 @@ class StaffCollegeMappingController extends Controller
                 'updated_at' => date('Y-m-d H:i:s'),
                 'updated_by' => Auth::user()->id
             ]);
-        // dd($data);
         DB::beginTransaction();
             DB::table('staff_college_mapping')->insert($data);
             DB::commit();
