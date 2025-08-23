@@ -61,7 +61,7 @@
 @section('js')
 <script>
     function downloadEmptyCSV() {
-    const headers = ['Faculty name', 'Grade', 'department', 'designation', 'email1','email2','mobile_no1','mobile_no2','mobile_no3','whatsapp'];
+    const headers = ['Faculty name', 'Grade', 'department', 'designation', 'email1','email2','mobile_no1','mobile_no2','mobile_no3','whatsapp','college_code'];
     const csvContent = headers.join(',') + '\n';
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
