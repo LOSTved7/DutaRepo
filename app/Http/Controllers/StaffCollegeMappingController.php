@@ -42,7 +42,7 @@ class StaffCollegeMappingController extends Controller
             $data->where('staff_detail_id', $staff_name);
         }
         $data = $data->get();
-        dd($data);
+        // dd($data);
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,
             'data' => $data,
