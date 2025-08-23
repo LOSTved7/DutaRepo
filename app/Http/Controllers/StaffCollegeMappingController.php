@@ -80,7 +80,7 @@ class StaffCollegeMappingController extends Controller
     public function store(Request $request)
     {
         $staff_profile_id = !empty($request->staff_profile_id)?$request->staff_profile_id:'';
-        $staff_id = !empty($request->staff_id)?$request->staff_id:'';
+        $staff_id = !empty($request->staff_id)?$request->staff_id:[];
         $status = !empty($request->status)?$request->status:1;
         $data = [];
         foreach ($staff_id as $staff_detail_id) {
