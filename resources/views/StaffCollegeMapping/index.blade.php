@@ -69,6 +69,7 @@
                                             <th  style="width:5%;">Staff Name</th>
                                             <th>WhatsApp</th>
                                             <th>Email</th>
+                                            <th>Notification Status</th>
                                             @if(Auth::user()->role_id == 59)
                                                 <th style="text-align: center;">Gat Nayak Name</th>
                                             @endif
@@ -87,10 +88,21 @@
                                                 <tr>
                                                     <td>{{ $i++ }}</td>
                                                     <td><input type="checkbox" class="staffCheckbox" name="staff_ids[]"
-                                                            value="{{ !empty($item->whatsapp)?$item->whatsapp:'' }}"></td>
+                                                            value="{{ !empty($item->staff_detail_id)?$item->staff_detail_id:'' }}"></td>
                                                     <td>{{ $full_name }}</td>
                                                     <td>{{ !empty($item->whatsapp)?$item->whatsapp:'' }}</td>
                                                     <td>{{ !empty($item->email1)?$item->email1:'' }}</td>
+                                                    <td>@if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent==1)
+                                                            ✅ WhatsApp Sent
+                                                        @endif
+
+                                                        @if(!empty($item->mail_sent) && $item->mail_sent==1)
+                                                            @if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent==1)
+                                                                <br>
+                                                            @endif
+                                                            ✅ Mail Sent
+                                                        @endif
+                                                    </td>
                                                     @if(Auth::user()->role_id == 59)
                                                     <td style="text-align: center;">
                                                         {{ $staff_Profile_arr[$item->staff_profile_id] ?? '' }}</td>

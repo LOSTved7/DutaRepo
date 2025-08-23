@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\DU_colleges;
-
+use Illuminate\Support\Facades\Mail;
 class StaffCollegeMappingController extends Controller
 {
     protected $current_menu;
@@ -42,7 +42,6 @@ class StaffCollegeMappingController extends Controller
             $data->where('staff_detail_id', $staff_name);
         }
         $data = $data->get();
-        // dd($data);
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,
             'data' => $data,
@@ -175,17 +174,17 @@ class StaffCollegeMappingController extends Controller
     public function send_whatsapp_notification(Request $request)
     {
         $subject = !empty($request->subject) ? $request->subject : '';
-      
         $body = !empty($request->body) ? $request->body : '';
         $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
         $body = str_replace('    ', ' ', $request->input('body'));
         $staffIds = $request->input('staff_ids');
         $image_url = $request->input('image_url');
         $numbers = !empty($selected_staff) ? json_decode($selected_staff) : [];
-        if (empty($numbers)) {
+        $whatsapp_nos = DB::table('staff_detail')->whereIn('id', $numbers)->pluck('whatsapp')->toArray();
+        if (empty($whatsapp_nos)) {
             return back()->with('error', 'No WhatsApp numbers selected to send notification.');
         }
-        foreach ($numbers as $num) {
+        foreach ($whatsapp_nos as $num) {
             if (empty($num) || $num == "") {
                 return back()->with('error', 'WhatsApp Number Not Found to send notification.');
             }
@@ -205,7 +204,7 @@ class StaffCollegeMappingController extends Controller
             $pathForDB_profile = NULL;
         }
 
-        foreach ($numbers as $id => $mobile) {
+        foreach ($whatsapp_nos as $id => $mobile) {
             if (!empty($mobile)) {
 
                 $api_key   = "446121c5221741959770a43777e4aea7";
@@ -266,89 +265,56 @@ class StaffCollegeMappingController extends Controller
     {
         $subject = !empty($request->subject) ? $request->subject : '';
         $body = !empty($request->body) ? $request->body : '';
+        $body = nl2br(e($body));
         $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
-        $body = str_replace('    ', ' ', $request->input('body'));
         $staffIds = $request->input('staff_ids');
         $image_url = $request->input('image_url');
         $numbers = !empty($selected_staff) ? json_decode($selected_staff) : [];
-        if (empty($numbers)) {
-            return back()->with('error', 'No WhatsApp numbers selected to send notification.');
+        $emails = DB::table('staff_detail')->whereIn('id', $numbers)->pluck('email1')->toArray();
+        if (empty($emails)) {
+            return back()->with('error', 'No Emails selected to send notification.');
         }
-        foreach ($numbers as $num) {
+        foreach ($emails as $num) {
             if (empty($num) || $num == "") {
-                return back()->with('error', 'WhatsApp Number Not Found to send notification.');
+                return back()->with('error', 'Email Not Found to send notification.');
             }
         }
         $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
+          $destinationPath_profile = '';
+        $fileName ='';
         if(!empty($attachment)) {
             $extension = $attachment->getClientOriginalExtension();
             $fileName = date('YmdHis').rand(10,99).'.'.$extension;
                 
-            $destinationPath_profile = public_path('whatsapp_message_attachments');
+            $destinationPath_profile = public_path('email_message_attachments');
             $attachment->move($destinationPath_profile, $fileName);
-            // dd($destinationPath_profile.'/'.$fileName);
+            $filePath = $destinationPath_profile.'/'.$fileName;
         }
         else {
             $pathForDB_profile = NULL;
+            $filePath = '';
         }
 
-        foreach ($numbers as $id => $mobile) {
-            if (!empty($mobile)) {
+        foreach ($emails as $email) {
+            Mail::send([], [], function ($message) use ($email, $subject, $body, $filePath, $fileName) {
+                $message->to($email)
+                    ->subject($subject)
+                    ->setBody($body, 'text/html');
 
-                $api_key   = "446121c5221741959770a43777e4aea7";
-                $base_url  = "https://wa.smsidea.com/api/v1";
-                $phone_no  = "91".$mobile;
-
-                $message   = str_replace('    ', ' ', $body);
-                $image_url = $destinationPath_profile.'/'.$fileName;
-
-                $action = $image_url ? "sendImage" : "sendMessage";
-                if ($action == "sendMessage") {
-                    $json = [
-                        "key"     => $api_key,
-                        "to"      => $phone_no,
-                        "message" => $message
-                    ];
-                } else {
-                    $json = [
-                        "key"=> $api_key,
-                        "to"=> $phone_no,
-                        "url"=> $image_url,
-                        "caption"  => $message,
-                        "filename" => $fileName
-                    ];
+                if ($filePath && file_exists($filePath)) {
+                    $message->attach($filePath, [
+                        'as' => $fileName
+                    ]);
                 }
-
-                $ch = curl_init();
-                curl_setopt_array($ch, [
-                    CURLOPT_URL => $base_url . "/" . $action,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => "",
-                    CURLOPT_MAXREDIRS   => 10,
-                    CURLOPT_TIMEOUT        => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST  => "POST",
-                    CURLOPT_POSTFIELDS     => json_encode($json),
-                    CURLOPT_HTTPHEADER     => ["Content-Type: application/json"]
+            });
+            DB::table("staff_detail")
+                ->where("email1", $email)
+                ->update([
+                    "mail_sent"      => 1,
+                    "email_sent_time" => date("Y-m-d H:i:s"),
                 ]);
-
-                $response = curl_exec($ch);
-                dd($response);
-                curl_close($ch);
-
-                $decoded = json_decode($response);
-                if (!empty($decoded->ErrorMessage) && $decoded->ErrorMessage == "success") {
-                    DB::table("staff_detail")
-                        ->where("whatsapp", $mobile)
-                        ->update([
-                            "whatsapp_message_sent"      => 1,
-                            "whatsapp_message_sent_time" => date("Y-m-d H:i:s"),
-                        ]);
-                }
-            }
         }
-        return back()->with('message', 'WhatsApp messages sent successfully.');
+        return back()->with('message', 'Email sent successfully.');
     }
 }
      
