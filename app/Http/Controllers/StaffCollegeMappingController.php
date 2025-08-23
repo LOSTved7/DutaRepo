@@ -42,6 +42,7 @@ class StaffCollegeMappingController extends Controller
             $data->where('staff_detail_id', $staff_name);
         }
         $data = $data->get();
+        dd($data);
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,
             'data' => $data,
@@ -190,6 +191,8 @@ class StaffCollegeMappingController extends Controller
             }
         }
         $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
+        $destinationPath_profile = '';
+        $fileName ='';
         if(!empty($attachment)) {
             $extension = $attachment->getClientOriginalExtension();
             $fileName = date('YmdHis').rand(10,99).'.'.$extension;
@@ -212,7 +215,7 @@ class StaffCollegeMappingController extends Controller
                 $message   = str_replace('    ', ' ', $body);
                 $image_url = $destinationPath_profile.'/'.$fileName;
 
-                $action = $image_url ? "sendImage" : "sendMessage";
+                $action = $fileName ? "sendImage" : "sendMessage";
                 if ($action == "sendMessage") {
                     $json = [
                         "key"     => $api_key,
@@ -244,7 +247,6 @@ class StaffCollegeMappingController extends Controller
                 ]);
 
                 $response = curl_exec($ch);
-                dd($response);
                 curl_close($ch);
 
                 $decoded = json_decode($response);
@@ -263,7 +265,6 @@ class StaffCollegeMappingController extends Controller
     public function send_mail_notification(Request $request)
     {
         $subject = !empty($request->subject) ? $request->subject : '';
-      
         $body = !empty($request->body) ? $request->body : '';
         $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
         $body = str_replace('    ', ' ', $request->input('body'));
