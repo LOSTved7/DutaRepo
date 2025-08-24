@@ -22,15 +22,15 @@ User
                                     <label for="college_name" class="form-label">College<font color="red"><b>*</b></font></label>
                                     <select class="form-select single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College">
                                         <option></option>
-                                        @foreach($duColleges as $value)
-                                            <option value="{{ $value }}" {{ $data->college_name == $value ? 'selected' : '' }}>{{ $value }}</option>
+                                        @foreach($duColleges as $key => $value)
+                                            <option value="{{ $key }}" {{ $data->college_name == $key ? 'selected' : '' }}>{{ $value }}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="department" class="form-label">Department<font color="red"><b>*</b></font></label>
-                                    <select class="form-select single-select-clear-field" name="department" id="department" required data-placeholder="Select Department">
+                                    <label for="department" class="form-label">Department</label>
+                                    <select class="form-select single-select-clear-field" name="department" id="department" data-placeholder="Select Department">
                                         <option></option>
                                         @foreach($department_mast as $key => $value)
 									        <option value="{{ $value }}" {{ $data->department_name==$value?'selected':'' }}>{{ $value }}</option>

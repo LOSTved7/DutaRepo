@@ -26,6 +26,7 @@ class Staff_detailController extends Controller
         $grade = !empty($request->grade) ? $request->grade : NULL;
         $department = !empty($request->department) ? $request->department : NULL;
         $designation = !empty($request->designation) ? $request->designation : NULL;
+        $duColleges_mast = DU_colleges::pluck('college_name','id');
         $user_profile = DB::table('users')->whereIn('role_id',[59,60])->pluck('name', 'id');
         $staff_profile = DB::table('staff_profile')->where('users_id',$users_id)->first();
         $staff_college_mapping = DB::table('gat_nayak_college_mapping')->join('staff_profile','staff_profile.id','gat_nayak_college_mapping.staff_profile_id');
@@ -73,8 +74,6 @@ class Staff_detailController extends Controller
             $department_mast->where('designation', $designation);
         }
         $department_mast=$department_mast->where('status', 1)->groupBy('department')->pluck('department');
-        // dd($college_name);
-
         $designation_mast = DB::table('staff_detail');
         if(!empty($college_name)){
             $designation_mast->where('college_name', $college_name);
@@ -94,6 +93,7 @@ class Staff_detailController extends Controller
             'designation_mast' => $designation_mast,
             'user_profile' => $user_profile,
             'duColleges' => $duColleges,
+            'duColleges_mast' => $duColleges_mast,
             'staff_college_mapping' => $staff_college_mapping,
         ]);
     }
@@ -106,6 +106,7 @@ class Staff_detailController extends Controller
                         ->where('status', 1)
                         ->groupBy('college_name')
                         ->pluck('college_name');
+        $duColleges_mast = DU_colleges::pluck('college_name','id');
 
         // $department = DB::table('department_mast')->where('status', 1)->pluck('department_name', 'id');
         $college_mapped = DB::table('staff_college_mapping')
@@ -118,7 +119,8 @@ class Staff_detailController extends Controller
             'current_menu' => $this->current_menu,
             // 'department' => $department,
             'duColleges'=>$duColleges,
-            'college_mapped'=>$college_mapped
+            'college_mapped'=>$college_mapped,
+            'duColleges_mast'=>$duColleges_mast,
         ]);
     }
 
@@ -144,10 +146,10 @@ class Staff_detailController extends Controller
         }
         $created_at = date('Y-m-d H:i:s');
         $created_by = Auth::user()->id;
-         $college_code_exist = DB::table('staff_detail')->where('id','!=',$exsist)->where('college_code', $college_code)->where('status',1)->first();
-            if($college_code_exist){
-                return redirect()->back()->with('error','College code already exist.');
-            }
+        //  $college_code_exist = DB::table('staff_detail')->where('id','!=',$exsist)->where('college_code', $college_code)->where('status',1)->first();
+        //     if($college_code_exist){
+        //         return redirect()->back()->with('error','College code already exist.');
+        //     }
        $Arr = [
             'name'=> $name,
             'mobile_no1'=> $mobile_no1,
@@ -213,12 +215,13 @@ class Staff_detailController extends Controller
             ->where('status', '!=', 9)
             ->first();
         // $department = DB::table('department_mast')->where('status', 1)->pluck('department_name', 'id');
+        $duColleges_mast = DU_colleges::pluck('college_name','id');
 
         if (!$data) {
             return redirect()->back()->with('error', 'Staff not found.');
         }
         $encrypted_id = $id;
-        $duColleges = DU_colleges::pluck('college_name');
+        $duColleges = DU_colleges::pluck('id');
         if(Auth::user()->role_id==60){
             $duColleges = DB::table('gat_nayak_college_mapping')
                           ->where('staff_profile_id',$staff_profile_id)
@@ -243,6 +246,7 @@ class Staff_detailController extends Controller
             'department_data' => $department_data,
             'duColleges' => $duColleges,
             'designation_data' => $designation_data,
+            'duColleges_mast' => $duColleges_mast,
         ]);
     }
     
@@ -266,10 +270,10 @@ class Staff_detailController extends Controller
     if(empty($whatsapp)){
         return redirect()->back()->with('error','WhatsApp number is required.');
     }
-      $college_code_exist = DB::table('staff_detail')->where('id','!=',$decrypted_id)->where('college_code', $college_code)->where('status',1)->first();
-            if($college_code_exist){
-                return redirect()->back()->with('error','College code already exist.');
-            }
+    //   $college_code_exist = DB::table('staff_detail')->where('id','!=',$decrypted_id)->where('college_code', $college_code)->where('status',1)->first();
+    //         if($college_code_exist){
+    //             return redirect()->back()->with('error','College code already exist.');
+    //         }
     $updated_at = date('Y-m-d H:i:s');
     $updated_by = Auth::user()->id;
 
@@ -325,7 +329,7 @@ class Staff_detailController extends Controller
     public function upload(Request $request){
         $auth = Auth::user();
         $staff_profile = DB::table('staff_profile')->where('users_id',$auth->id)->first();
-        $duColleges = DU_colleges::pluck('college_name');
+        $duColleges = DU_colleges::pluck('college_name','id');
          if(Auth::user()->role_id==60){
             $staff_profile_id = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.users_id',Auth::user()->id)->pluck( 'staff_profile.id');
 
@@ -343,7 +347,7 @@ class Staff_detailController extends Controller
                         }
                         $file = !empty($request->file('excel'))?$request->file('excel'):null;
                         $extension = $file->getClientOriginalExtension();
-                        $fileName = date('YmdHis').rand(10,99).trim($college_name).'.'.$extension;
+                        $fileName = date('YmdHis').rand(10,99).trim($duColleges[$college_name]).'.'.$extension;
                         $filePath =$file->move('staff_upload_file',$fileName);
                         $final_arr = [];
                     if (($getfile = fopen($filePath, "r")) !== FALSE) {
@@ -523,6 +527,15 @@ public function getStaffByGatNayak(Request $request){
               ->join('staff_detail','staff_detail.id','staff_college_mapping.staff_detail_id')
               ->where('staff_college_mapping.staff_profile_id',$gat_nayak_id)
               ->pluck('staff_detail.name','staff_detail_id');
+    return response()->json($data);
+}
+public function get_Mappedcollege_by_staff(Request $request){
+    $gat_nayak_id = !empty($request->gat_nayak_id)?$request->gat_nayak_id:'';
+    $data = DB::table('gat_nayak_college_mapping')
+              ->join('staff_profile','staff_profile.id','gat_nayak_college_mapping.staff_profile_id')
+              ->where('gat_nayak_college_mapping.staff_profile_id',$gat_nayak_id)
+              ->where('gat_nayak_college_mapping.status',1)
+              ->pluck('gat_nayak_college_mapping.college_name');
     return response()->json($data);
 }
 

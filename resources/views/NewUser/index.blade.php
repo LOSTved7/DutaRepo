@@ -150,7 +150,7 @@ USERMAST
 									$encid = Crypt::encryptString($value->id);
 									$mobile = !empty($value->contact_no)?$value->contact_no:'-';
 									$name = (!empty($value->name)) ? $value->name : '-';
-									$college_name = (!empty($value->college_name)) ? $value->college_name : '-';
+									$college_name = (!empty($duColleges[$value->college_name])) ? $duColleges[$value->college_name] : '-';
 									$user_name = (!empty($value->username) && !empty($value->username)) ? $value->username : '-';
 								?>             
 								<tr>

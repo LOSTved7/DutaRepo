@@ -42,7 +42,7 @@ CREATE STAFF
 										<select class="form-control single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College" onchange="get_staff_by_college(this);">
 										<option></option>
 										@foreach($duColleges as $key => $value)
-										    <option value="{{$value}}" >{{$value}}</option>
+										    <option value="{{$value}}" >{{!empty($duColleges_mast[$value])?$duColleges_mast[$value]:''}}</option>
 										@endforeach
 									 </select>
 									</div>

@@ -107,7 +107,7 @@
                                                     <td style="text-align: center;">
                                                         {{ $staff_Profile_arr[$item->staff_profile_id] ?? '' }}</td>
                                                         @endif
-                                                        <td>{{ $item->college_name ?? '' }}</td>
+                                                        <td>{{ !empty($duColleges_mast[$item->college_name])?$duColleges_mast[$item->college_name]:'' }}</td>
                                                     <td>{{ $item->designation ?? '' }}</td>
                                                 </tr>
                                             @endforeach

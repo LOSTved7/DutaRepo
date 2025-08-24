@@ -24,7 +24,7 @@
 
 								<div class="col-md-3">
 									<label for="staff_name" class="form-label">Staff Name<font color="red"><b>*</b></font></label>
-									<select class="form-select single-select-clear-field" name="staff_profile_id"
+									<select class="form-select single-select-clear-field" name="staff_profile_id" id="staff_profile_id"
 										data-placeholder="Select staff" required>
 										<option></option>
 										@foreach($staffProfiles as $key => $value)
@@ -35,12 +35,12 @@
 
 								<div class="col-md-6">
 									<label for="college_name" class="form-label">College<font color="red"><b>*</b></font></label>
-									<select class="form-select single-select-clear-field" name="college_name"
+									<select class="form-select single-select-clear-field" name="college_name" id="college_name"
 										data-placeholder="Select College" required >
 										<option></option>
-										@foreach($duColleges as $key => $value)
+										{{--@foreach($duColleges as $key => $value)
 											<option value="{{$value}}" {{ $college_name==$value?'selected':'' }}>{{$value}}</option>
-										@endforeach
+										@endforeach--}}
 									</select>
 								</div>
 
@@ -107,6 +107,43 @@
 
 @endsection
 
+
+@section('js')
+<script>
+ $('document').ready(function(){
+	get_colleges();
+ });
+		function get_colleges() {
+			var staff_id = $('#staff_profile_id').val();
+			const duColleges = @json($duColleges);
+			$('#college_name').html('<option></option>');
+
+			if (staff_id) {
+				$.ajax({
+					type: "POST",
+					url: "{{ url('get_Mappedcollege_by_staff') }}",
+					data: { 
+						'_token': '{{ csrf_token() }}',
+						'gat_nayak_id': staff_id },
+					success: function(res) {
+						if (res) {
+							$("#college_name").empty();
+							$("#college_name").append('<option value="">Select College</option>');
+							$.each(res, function(key, value) {
+								$("#college_name").append('<option value="'+value+'">'+duColleges[value] || ''+'</option>');
+							});
+						} else {
+							$("#college_name").empty();
+						}
+					}
+				});
+			} else {
+				$("#college_name").empty();
+			}
+		}
+
+	</script>
+
 		<script>
 			function checkall_function(ele) {
 			var checkboxes = document.getElementsByTagName('input');
@@ -126,3 +163,5 @@
 			}
 		}
 		</script>
+
+@endsection

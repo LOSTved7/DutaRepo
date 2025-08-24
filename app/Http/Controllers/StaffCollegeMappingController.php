@@ -26,6 +26,7 @@ class StaffCollegeMappingController extends Controller
         $staff_name = !empty($request->staff_name) ? $request->staff_name : '';
         $staffProfiles = DB::table('staff_detail')->where('status',1)->pluck('name', 'id');
         $staff_Profile_id = DB::table('staff_profile')->where('status',1)->where('users_id', Auth::user()->id)->pluck( 'id')->first();
+        $duColleges_mast = DU_colleges::pluck('college_name','id');
         $staff_Profile_arr = DB::table('staff_profile')
                                ->join('users', 'staff_profile.users_id', '=', 'users.id')
                                ->where('staff_profile.status',1);
@@ -54,6 +55,7 @@ class StaffCollegeMappingController extends Controller
             'staff_Profile_arr' => $staff_Profile_arr,
             'staffProfiles' => $staffProfiles,
             'staff_detail_arr' => $staff_detail_arr,
+            'duColleges_mast' => $duColleges_mast,
         ]);
     }
 
@@ -62,7 +64,7 @@ class StaffCollegeMappingController extends Controller
         $college_name = !empty($request->college_name)?$request->college_name:'';
         $staff_profile_id = !empty($request->staff_profile_id)?$request->staff_profile_id:'';
         $staffProfiles = DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')->where('staff_profile.status',1)->pluck( 'staff_profile.name','staff_profile.id');
-        $duColleges = DU_colleges::pluck('college_name');
+        $duColleges = DU_colleges::pluck('college_name','id');
         // dd($staff_profile_id);
         if(Auth::user()->role_id==60){
             
@@ -159,7 +161,7 @@ class StaffCollegeMappingController extends Controller
                     'updated_by' => Auth::user()->id
                 ]);
         }
-        // dd($data);
+        
         DB::beginTransaction();
             DB::table('staff_college_mapping')->insert($data);
             DB::commit();

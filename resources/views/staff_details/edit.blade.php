@@ -24,7 +24,9 @@ Edit Staff
 										<select class="form-select single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College Name">
 											<option></option>
 											@foreach ($duColleges as $value )
-											<option value="{{ $value }}" {{$data->college_name==$value?'selected':''}}>{{ $value }}</option>
+											@if(!empty($duColleges_mast[$value]))
+											<option value="{{ $value }}" {{$data->college_name==$value?'selected':''}}>{{ $duColleges_mast[$value] }}</option>
+											@endif
 											@endforeach
 											</select>
 									</div>

@@ -38,7 +38,10 @@
                                 @foreach($grouped as $staffId => $items)
                                     @php
                                         $encid = Crypt::encryptString($staffId);
-                                        $colleges = $items->pluck('college_name')->filter()->unique()->implode('<br>');
+                                        $collegeIds = $items->pluck('college_name')->filter()->unique();
+                                        $colleges = $collegeIds->map(function($id) use ($duColleges) {
+                                            return $duColleges[$id] ?? '';
+                                        })->implode('<br>');
                                     @endphp
                                     <tr>
                                         <td>{{ $i++ }}</td>

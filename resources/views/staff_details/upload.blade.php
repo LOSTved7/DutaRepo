@@ -32,8 +32,8 @@
                                             name="college_name" id="college_name" required
                                             data-placeholder="Select College">
                                             <option></option>
-                                            @foreach($duColleges as $college)
-                                                <option value="{{ $college }}">{{ $college }}
+                                            @foreach($duColleges as $key => $college)
+                                                <option value="{{ $key }}">{{ $college }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -44,7 +44,7 @@ STAFF COLLEGE MAPPING
 											}
 										@endphp
 										@foreach($duColleges as $key => $value)
-										    <option value="{{$value}}" {{ in_array($value, (array) $college_arr) ? 'selected' : '' }}>{{$value}}</option>
+										    <option value="{{$key}}" {{ in_array($key, (array) $college_arr) ? 'selected' : '' }}>{{$value}}</option>
 										@endforeach
 									 </select>
 								 </div>

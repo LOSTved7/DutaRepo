@@ -31,8 +31,8 @@ STAFF DETAILS
 							<label for="single-select-clear-field" class="form-label">College</label>
 						 	<select class="form-select single-select-clear-field" name="college_name" id="college_name"  data-placeholder="Select College" onchange="get_staff_by_college(this);">
 							  	<option value=""> </option>
-							 	@foreach($duColleges as $value);
-								<option value="{{$value}}" {{ old('college_name', request('college_name')) == $value ? 'selected' : '' }}> {{ $value}}</option>
+							 	@foreach($duColleges as $key => $value);
+								<option value="{{$key}}" {{ old('college_name', request('college_name')) == $key ? 'selected' : '' }}> {{ !empty($duColleges_mast[$value])?$duColleges_mast[$value]:''}}</option>
 								@endforeach 
 						 	</select>
 					 	</div>
@@ -98,7 +98,7 @@ STAFF DETAILS
 							@endphp
 								<tr>
 									<td>{{ $i++ }}</td>
-									<td>{{ !empty($staff->college_name)?$staff->college_name:''}}</td>
+									<td>{{ !empty($duColleges_mast[$staff->college_name])?$duColleges_mast[$staff->college_name]:''}}</td>
 									<td>{{ !empty($staff->college_code)?$staff->college_code:''}}</td>
 									<td>{{ !empty($staff->name)?$staff->name:''}}</td>
 									<td>{{ !empty($staff->mobile_no1)?$staff->mobile_no1:''}}</td>

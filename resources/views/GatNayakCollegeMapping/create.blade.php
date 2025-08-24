@@ -36,7 +36,7 @@ Staff College Mapping
 									<select class="form-select single-select-clear-field" name="college_name[]" multiple  data-placeholder="Select College" required>
 							<option></option>
 										@foreach($duColleges as $key => $value)
-										    <option value="{{$value}}">{{$value}}</option>
+										    <option value="{{$key}}">{{$value}}</option>
 										@endforeach
 									 </select>
 								 </div>

@@ -44,11 +44,13 @@ class NewUserController extends Controller
         if (!empty($role)) {
             $data->where('users.role_id', $role);
         }
+        $duColleges = DU_colleges::pluck('college_name','id');
             return view($this->current_menu.'/index', [
                     'current_menu'=>$this->current_menu,
                     'role_mast'=>$role_mast,    
                     'data'=>!empty($data->get())?$data->get():[],
                     'role'=>$role,
+                    'duColleges'=>$duColleges,
                 ]);
     }
 
@@ -57,7 +59,7 @@ class NewUserController extends Controller
         $college_id = Auth::user()->college_id;
         $department_mast = DB::table('staff_detail')->distinct('department')->pluck('department');
         $role_id = Role::pluckActiveCodeAndName();
-        $duColleges = DU_colleges::pluck('college_name');
+        $duColleges = DU_colleges::pluck('college_name','id');
     
          return view($this->current_menu.'/create_election', [
             'current_menu'=>$this->current_menu,
@@ -141,7 +143,7 @@ class NewUserController extends Controller
  public function edit($id)
     {
         $decrypted_id=Crypt::DecryptString($id);
-        $duColleges = DU_colleges::pluck('college_name');
+        $duColleges = DU_colleges::pluck('college_name','id');
         $role_id = Role::pluckActiveCodeAndName();
         $department_mast = DB::table('staff_detail')->distinct('department')->pluck('department');
         $data = DB::table('staff_profile')->join('users','staff_profile.users_id','users.id')->where('staff_profile.id',$decrypted_id)->select('staff_profile.*')->first();

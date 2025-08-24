@@ -37,8 +37,8 @@ User
 									    <label for="college_name" class="form-label">College<font color="red"><b>*</b></font></label>
 									    <select class="form-select single-select-clear-field" name="college_name" id="college_name" required data-placeholder="Select College">
 									      <option></option>
-									      @foreach($duColleges as $value)
-									        <option value="{{ $value }}">{{ $value }}</option>
+									      @foreach($duColleges as $key => $value)
+									        <option value="{{ $key }}">{{ $value }}</option>
 									      @endforeach
 									    </select>
 									  </div>
@@ -156,45 +156,6 @@ User
         // alert(1);
       });
     });
-	
-// function check_address_checkbox() {
-//     var checkbox_status = document.getElementById('address_same').checked;
-
-//     if (checkbox_status) {
-//         var current_address = document.getElementById('current_address').value;
-//         var current_state = document.getElementById('current_state').value;
-//         var current_pincode = document.getElementById('current_pincode').value;
-
-//         if (current_address === '' || current_state === '' || current_pincode === '') {
-//             alert('Please fill all Current Address, State, and Pincode.');
-//             document.getElementById('address_same').checked = false;
-//         } else {
-//             // Enable editing of current address, state, and pincode
-//             document.getElementById('current_address').readOnly = false;
-//             document.getElementById('current_pincode').readOnly = false;
-//             document.querySelector("#current_state").disabled = false;
-
-//             document.getElementById('permanent_address').value = current_address;
-//             document.getElementById('permanent_address').readOnly = true;
-//             document.getElementById('permanent_pincode').value = current_pincode;
-//             document.getElementById('permanent_pincode').readOnly = true;
-//             $('#permanent_state').val(current_state).trigger('change.select2');
-//             document.querySelector("#permanent_state").disabled = true;
-//         }
-//     } else {
-//         // Enable editing of current and permanent address, state, and pincode
-//         document.getElementById('current_address').readOnly = false;
-//         document.getElementById('current_pincode').readOnly = false;
-//         document.querySelector("#current_state").disabled = false;
-
-//         document.getElementById('permanent_address').value = '';
-//         document.getElementById('permanent_address').readOnly = false;
-//         document.getElementById('permanent_pincode').value = '';
-//         document.getElementById('permanent_pincode').readOnly = false;
-//         $('#permanent_state').val('').trigger('change.select2');
-//         document.querySelector("#permanent_state").disabled = false;
-//     }
-// }
 function find_by_contact_no(){
 	var contact_no_search = document.getElementById('contact_no_search').value;
 

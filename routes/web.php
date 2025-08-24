@@ -87,6 +87,7 @@ Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college
 Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
 Route::post('get_staff_by_designation', 'Staff_detailController@get_staff_by_designation')->name('get_staff_by_designation');
 Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_contact_no')->name('find_staff_by_contact_no');
+Route::post('get_Mappedcollege_by_staff', 'Staff_detailController@get_Mappedcollege_by_staff')->name('get_Mappedcollege_by_staff');
 Route::post('getStaffByGatNayak', 'Staff_detailController@getStaffByGatNayak')->name('getStaffByGatNayak');
 Route::post('send_whatsapp_notification', 'StaffCollegeMappingController@send_whatsapp_notification')->name('send.sms');
 Route::post('send_mail_notification', 'StaffCollegeMappingController@send_mail_notification')->name('send.mail');
