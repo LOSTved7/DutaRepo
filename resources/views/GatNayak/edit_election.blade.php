@@ -12,7 +12,7 @@ User
             <div class="col-xl-12 mx-auto">
                 <div class="card">
                     <div class="card-body p-4">
-                        <h4 class="mb-2">EDIT CANDIDATE</h4>
+                        <h4 class="mb-2">EDIT USER</h4>
                         <form class="row g-3" action="{{ route($current_menu.'.update', $data->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')

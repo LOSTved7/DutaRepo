@@ -13,11 +13,11 @@ use Hash;
 use DB;
 use App\Models\User_Profile;
 use App\Models\DU_colleges;
-class NewUserController extends Controller
+class GatNayakController extends Controller
 {
     
      public function __construct() {
-        $this->current_menu = 'NewUser';
+        $this->current_menu = 'GatNayak';
     }
     public function index(Request $request)
     {
@@ -32,7 +32,8 @@ class NewUserController extends Controller
         $submit=!empty($request->submit)?$request->submit:'';
         $data= DB::table('staff_profile')->join('users', 'staff_profile.users_id', '=', 'users.id')
                         ->where('staff_profile.status', '!=', 9)
-                        ->whereIn('users.role_id',[59,60])->where('staff_profile.gatnayak_or_candidate',Null)
+                        ->whereIn('users.role_id',[59,60])
+                        ->where('staff_profile.gatnayak_or_candidate',2)
                         ->select('staff_profile.*','users.email as username');
 
         if (!empty($name)) {
@@ -113,6 +114,7 @@ class NewUserController extends Controller
         $profile_arr = [
             'users_id' => $user->id,
             'name' => $fullname,
+            'gatnayak_or_candidate' => 2,
             'college_name' => $college_name,
             'department_name' => $department,
             'contact_no' => $contact_no,
@@ -134,7 +136,7 @@ class NewUserController extends Controller
         $duColleges = DU_colleges::pluck('college_name','id');
         $role_id = Role::pluckActiveCodeAndName();
         $department_mast = DB::table('staff_detail')->distinct('department')->pluck('department');
-        $data = DB::table('staff_profile')->join('users','staff_profile.users_id','users.id')->where('staff_profile.id',$decrypted_id)->select('staff_profile.*')->first();
+        $data = DB::table('staff_profile')->join('users','staff_profile.users_id','users.id')->where('staff_profile.gatnayak_or_candidate',2)->where('staff_profile.id',$decrypted_id)->select('staff_profile.*')->first();
         return view($this->current_menu.'.edit_election', [
             'current_menu'=>$this->current_menu,
             'data'=>$data,
@@ -197,6 +199,7 @@ public function update(Request $request, $id)
                 'college_name' => $college_name,
                 'department_name' => $department,
                 'contact_no' => $contact_no,
+                'gatnayak_or_candidate' => 2,
                 'status' => $status,
                 'updated_by' => $user_id,
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -239,6 +242,7 @@ public function update(Request $request, $id)
                     'department_name'=> !empty($data[2])?$data[2]:'',
                     'contact_no'=> !empty($data[3])?$data[3]:'',
                     'status'=> 1,
+                                    'gatnayak_or_candidate' => 2,
                     'created_at'=> date('Y-m-d H:i:s'),
                     'created_by'=> Auth::user()->id,
                 ];
@@ -248,7 +252,7 @@ public function update(Request $request, $id)
         DB::commit();
         Session::flash('message', 'data uploaded successfully.');
         Session::flash('alert-class', 'alert-success');
-        return redirect('NewUser');
+        return redirect($this->current_menu);
             }
 
         return view($this->current_menu.'/upload', [

@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <div class="page-breadcrumb d-sm-flex align-items-center mb-3">
                         <div>
-                            <h3 class="mb-0">CANDIDATE SEND MESSAGE</h3>
+                            <h3 class="mb-0">GAT NAYAK SEND MESSAGE</h3>
                         </div>
                         <div class="ms-auto">
                         {{--    <div class="btn-group">
@@ -21,7 +21,7 @@
                         @csrf
                         <div class="row">
                             <div class="col-md-3">
-                                <label for="" class="form-label">Candidate Name</label>
+                                <label for="" class="form-label">Gat Nayak Name</label>
                                 <select class="form-select single-select-clear-field" name="candidate_name" id="candidate_name" onchange="get_mapped_college(this.value);"
                                    data-placeholder="Select Name">
                                     <option></option>

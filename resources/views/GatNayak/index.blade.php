@@ -1,7 +1,7 @@
 @extends('layouts.header')
 
 @section('title')
-CANDIDATE
+GAT NAYAK
 @endsection
 
 @section('content')
@@ -18,14 +18,14 @@ CANDIDATE
 							<div class="card-body">
 								<div class="page-breadcrumb d-sm-flex align-items-center mb-3">
 									<div>
-										<h4>CANDIDATE</h4>
+										<h4>GAT NAYAK</h4>
 									</div>
 									<div class="ms-auto">
 						
 						<div class="btn-group">
-							{{--	<div class="btn-group">
+								<div class="btn-group">
 							<a href="{{ route('gatNayakUpload') }}" class="btn btn-warning">Upload</a>
-						</div>--}}
+						</div>
 
 							<!-- Import File Modal -->
 							<div class="modal fade" id="importFileModal" tabindex="-1" aria-labelledby="importFileModalLabel" aria-hidden="true">
@@ -75,7 +75,7 @@ CANDIDATE
 
 						
 
-							<a href="{{route($current_menu.'.create')}}" class="btn btn-primary px-4">ADD CANDIDATE</a>
+							<a href="{{route($current_menu.'.create')}}" class="btn btn-primary px-4">ADD GAT NAYAK</a>
 							
 
 							  

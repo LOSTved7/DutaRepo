@@ -18,7 +18,7 @@ User
 							<div class="card-body p-4">
 								<div class="row">
 									<div class="col-md-3 mt-2">
-										<h4 class="">ADD CANDIDATE</h4>
+										<h4 class="">ADD GAT NAYAK</h4>
 									</div>
 									<div class="col-md-5">
 									</div>

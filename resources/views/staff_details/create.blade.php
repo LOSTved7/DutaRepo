@@ -19,11 +19,11 @@ CREATE STAFF
 									</div>
 									<div class="col-md-5">
 									</div>
-									<div class="col-md-3">
+									<div class="col-md-3" style="display:none;">
 										<span for="contact_no" class="form-label">Find By Contact No.</span>
 										<input type="text" name="" id="contact_no_search" class="form-control" placeholder="Enter Contact no." maxlength="50" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)">
 									</div>
-									<div class="col-md-1">
+									<div class="col-md-1"  style="display:none;">
 										<button type="button" class="btn btn-primary mt-4" onclick="find_by_contact_no()">search</button>
 									</div>
 								</div>

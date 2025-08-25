@@ -44,6 +44,7 @@ Route::post('change_password_at_login', 'PasswordController@change_password_at_l
 
 Route::post('register_new_company', 'CompanyMastController@register_new_company')->name('register_new_company');
 Route::post('register_new_user', 'RegisterUserController@register_new_user')->name('register_new_user');
+Route::post('get_mapped_college', 'StaffCollegeMappingController@get_mapped_college')->name('get_mapped_college');
 
 Auth::routes();
 
@@ -61,6 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/send-emails', 'MailController@sendEmails')->name('send.emails');
     Route::post('getSubject', 'AjaxController@getSubject')->name('getSubject');
     Route::resource('NewUser', 'NewUserController');
+    Route::resource('GatNayak', 'GatNayakController');
 
 
 });
@@ -80,11 +82,12 @@ Route::get('server_vars', function () {
 });
         Route::resource('RoleMast', 'RoleController');
 
-Route::resource('staff_details', 'Staff_detailController');
-Route::any('staff_upload', 'Staff_detailController@upload')->name('staff_upload');
-Route::resource('StaffCollegeMapping', 'StaffCollegeMappingController');
-Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college')->name('get_staff_by_college');
-Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
+        Route::resource('staff_details', 'Staff_detailController');
+        Route::any('staff_upload', 'Staff_detailController@upload')->name('staff_upload');
+        Route::resource('StaffCollegeMapping', 'StaffCollegeMappingController');
+        Route::resource('StaffCollegeMapping2', 'StaffCollegeMapping2Controller');
+        Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college')->name('get_staff_by_college');
+        Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
 Route::post('get_staff_by_designation', 'Staff_detailController@get_staff_by_designation')->name('get_staff_by_designation');
 Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_contact_no')->name('find_staff_by_contact_no');
 Route::post('get_Mappedcollege_by_staff', 'Staff_detailController@get_Mappedcollege_by_staff')->name('get_Mappedcollege_by_staff');
@@ -92,10 +95,19 @@ Route::post('getStaffByGatNayak', 'Staff_detailController@getStaffByGatNayak')->
 Route::post('send_whatsapp_notification', 'StaffCollegeMappingController@send_whatsapp_notification')->name('send.sms');
 Route::post('send_mail_notification', 'StaffCollegeMappingController@send_mail_notification')->name('send.mail');
 Route::resource('CollegeMaster', 'CollegeMasterController');
-    Route::post('CollegeMaster/importData', 'CollegeMasterController@importData')->name('college.importData');
-       
-    Route::resource('ModuleMaster', 'ModuleMasterController');
-    Route::resource('ModuleAssigning', 'ModuleAssigningController');
-    Route::resource('GatNayakCollegeMapping', 'GatNayakCollegeMappingController');
+Route::post('CollegeMaster/importData', 'CollegeMasterController@importData')->name('college.importData');
+Route::any('gatNayakUpload', 'GatNayakController@upload')->name('gatNayakUpload');
+
+Route::resource('ModuleMaster', 'ModuleMasterController');
+Route::resource('ModuleAssigning', 'ModuleAssigningController');
+Route::resource('GatNayakCollegeMapping', 'GatNayakCollegeMappingController');
+Route::resource('CandidateCollegeMapping', 'CandidateCollegeMappingController');
+Route::resource('staff_personal_details', 'Staff_personal_detailController');
+Route::post('find_staff_personal_detail_by_contact_no', 'Staff_personal_detailController@find_staff_personal_detail_by_contact_no')
+            ->name('find_staff_personal_detail_by_contact_no');
+Route::post('/upload-excel', 'ExcelController@uploadExcel')->name('upload.excel');
+Route::get('/uploadExcel',function(){
+    return view('uploadExcel');
+});
 
 ///////////////////     Hemant's Route ends here /////////////////////

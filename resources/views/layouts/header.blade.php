@@ -145,7 +145,7 @@
 	<div class="wrapper">
 		<div class="sidebar-wrapper" data-simplebar="true">
 			<div class="sidebar-header">
-				<a href="{{ url('dashboard') }}" style="text-decoration: none;">
+				<a href="{{ url('StaffCollegeMapping') }}" style="text-decoration: none;">
 				    <div style="display: flex; align-items: center;">
 				        <h4 class="logo-text" style="color: #3e3f94; margin-left: 10px;">{{ strtoupper($short_name) }}</h4>
 				    </div>

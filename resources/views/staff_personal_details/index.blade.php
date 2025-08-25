@@ -10,32 +10,36 @@ STAFF DETAILS
 		<div class="card">
 			<div class="card-body">
 				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-					@php
+				@php
 					$total_records = count($data);
 					$total_mobile_no_count =0;
 					$total_email_count =0;
+					$unique_count = [];
 					foreach($data as $staff){
-						if(!empty($staff->mobile_no1)){
+						if(!empty($staff->mobile)){
 							$total_mobile_no_count++;
 						}
-						if(!empty($staff->email1)){
+						if(!empty($staff->email)){
 							$total_email_count++;
+						}
+						if(empty($unique_count[$staff->mobile])){
+							$unique_count[$staff->mobile] = 1;
+						}else{
+						$unique_count[$staff->mobile] +=1 ;
 						}
 					}
 					//dd($data,$total_mobile_no_count,$total_email_count);
 					@endphp
-					<h3	>STAFF / GRADE</h3>
-					<div class="mx-auto text-end">
+					<h3	>CANDIDATE MAPPINGS</h3>
+					{{--<div class="mx-auto text-end">
 						<h6 class="d-inline-block ms-3" style="color:blue;">Total Result: <span style="color:red;"> {{ $total_records }}</span></h6>
 						<h6 class="d-inline-block ms-3" style="color:blue;">Contact: <span style="color:red;">{{ $total_mobile_no_count }}</span></h6>
 						<h6 class="d-inline-block ms-3" style="color:blue;">Emails: <span style="color:red;">{{ $total_email_count }}</span></h6>
-					</div>
+					</div>--}}
 					<div class="ms-auto">
+					
 						<div class="btn-group">
-							<a href="{{ route('staff_upload') }}" class="btn btn-warning">Upload</a>
-						</div>
-						<div class="btn-group">
-							<a href="{{ url($current_menu.'/create') }}" class="btn btn-primary">Add</a>
+							<a href="{{ url($current_menu.'/create') }}" class="btn btn-primary">Add Personal Details</a>
 						</div>
 					</div>
 				</div>
@@ -55,6 +59,7 @@ STAFF DETAILS
 								@endforeach 
 						 	</select>
 					 	</div>
+{{--
 						<div class="col-md-3">
 							<label class="form-label">Department</label>
 							<select name="department" id="department" class="form-select single-select-clear-field" data-placeholder="Select Department" maxlength="100" onchange="get_staff_by_department(this);">
@@ -64,17 +69,7 @@ STAFF DETAILS
 								@endforeach
 							</select>
 						</div>
-						<div class="col-md-3">
-							<label class="form-label">Designation</label>
-							<select name="designation" id="designation" class="form-select single-select-clear-field" data-placeholder="select Designation" maxlength="100" onclick="get_staff_by_designation(this);">
-								<option></option>
-								@foreach($designation_mast as $key => $value)
-									<option value="{{ $value }}" {{ old('designation', request('designation')) == $value ? 'selected' : '' }}>{{ $value }}</option>
-								@endforeach
-							</select>
-						</div> 
-
-						<div class="col-md-2" style="display: none;">
+						<div class="col-md-2">
 							<label class="form-label">Grade</label>
 							<select class="form-select single-select-clear-field" name="grade" data-placeholder="Select Grade">
 								<option ></option>
@@ -83,7 +78,7 @@ STAFF DETAILS
 								<option value="C" {{ old('grade', request('grade')) == 'C' ? 'selected' : '' }}>C</option>
 								<option value="D" {{ old('grade', request('grade')) == 'D' ? 'selected' : '' }}>D</option>
 							</select>
-						</div>
+						</div>--}}
 						<div class="col-md-1" style="margin-top:25px; display:flex; " >
 
 					    <input style="margin:3px" type="submit" class="btn btn-primary px-4" value="Find">
@@ -97,46 +92,53 @@ STAFF DETAILS
 							<tr>
 								<th>S.No.</th>
 								<th>College Name</th>
-								<th>College Code</th>
 								<th>Name</th>
 								<th>Mobile No</th>
 								<th>Email</th>
 								<th>Department</th>
-								<th>Designation</th>
 								@if(Auth::user()->role_id == '59')
 								<th>Created By</th>
 								@endif
-								<th>Action</th>
+								<th>Count</th>
+							{{--	<th>Action</th>--}}
 							</tr>
 						</thead>
 						<tbody>
-							@php $i = 1; @endphp
+							@php $i = 1;
+							$unique = [];
+							 @endphp
 							@foreach ($data as $staff)
+							@if(!in_array($staff->mobile,$unique))
+							
 							@php
 								$encrypt_id = Crypt::encryptString($staff->id);
 							@endphp
 								<tr>
 									<td>{{ $i++ }}</td>
 									<td>{{ !empty($duColleges_mast[$staff->college_name])?$duColleges_mast[$staff->college_name]:''}}</td>
-									<td>{{ !empty($staff->college_code)?$staff->college_code:''}}</td>
 									<td>{{ !empty($staff->name)?$staff->name:''}}</td>
-									<td>{{ !empty($staff->mobile_no1)?$staff->mobile_no1:''}}</td>
-									<td>{{ !empty($staff->email1)?$staff->email1:''}}</td>
+									<td>{{ !empty($staff->mobile)?$staff->mobile:''}}</td>
+									<td>{{ !empty($staff->email)?$staff->email:''}}</td>
 									<td>{{ !empty($staff->department)?$staff->department:''}}</td>
-									<td>{{ !empty($staff->designation)?$staff->designation:''}}</td>
 								@if(Auth::user()->role_id ==59)
 									<td>{{ !empty($user_profile[$staff->created_by])?$user_profile[$staff->created_by]:''}}</td>
 								@endif
-									<td>
+
+									{{--<td>
 										<a href="{{ url($current_menu.'/'.$encrypt_id.'/edit') }}" class="btn btn-sm btn-warning">Edit</a>
 										<form action="{{ route($current_menu.'.destroy', $encrypt_id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this staff member?');">
 											@csrf
 											@method('DELETE')
 											<button type="submit" class="btn btn-sm btn-danger">Delete</button>
 										</form>
-									</td>
+									</td>--}}
+									<td>{{ !empty($unique_count[$staff->mobile])?$unique_count[$staff->mobile]:'' }}</td>
 								
 								</tr>
+								@endif
+								@php
+							$unique[] = $staff->mobile;
+							@endphp
 							@endforeach
 
 							@if ($data->isEmpty())

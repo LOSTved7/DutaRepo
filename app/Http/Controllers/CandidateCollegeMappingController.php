@@ -10,20 +10,20 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\DU_colleges;
 
-class GatNayakCollegeMappingController extends Controller
+class CandidateCollegeMappingController extends Controller
 {
     protected $current_menu;
 
     public function __construct()
     {
-        $this->current_menu = 'GatNayakCollegeMapping';
+        $this->current_menu = 'CandidateCollegeMapping';
     }
 
     public function index()
     {
         $staffProfiles = DB::table('staff_profile')
                            ->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
-        $data = DB::table('gat_nayak_college_mapping')->join('staff_profile','gat_nayak_college_mapping.staff_profile_id','staff_profile.id')->where('staff_profile.gatnayak_or_candidate',2)->where('gat_nayak_college_mapping.status',1)->select('gat_nayak_college_mapping.*')->get();
+        $data = DB::table('gat_nayak_college_mapping')->join('staff_profile','staff_profile_id','staff_profile.id')->where('staff_profile.gatnayak_or_candidate',Null)->where('gat_nayak_college_mapping.status',1)->select('gat_nayak_college_mapping.*')->get();
         $duColleges = DU_colleges::pluck('college_name','id');
         return view($this->current_menu . '.index', [
             'current_menu' => $this->current_menu,
@@ -35,7 +35,7 @@ class GatNayakCollegeMappingController extends Controller
 
     public function create()
     {
-        $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->where('staff_profile.gatnayak_or_candidate',2)->pluck('staff_profile.name', 'staff_profile.id');
+        $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->where('staff_profile.gatnayak_or_candidate',Null)->pluck('staff_profile.name', 'staff_profile.id');
         $duColleges = DU_colleges::pluck('college_name','id');
 
         return view($this->current_menu . '.create', [
@@ -81,7 +81,7 @@ class GatNayakCollegeMappingController extends Controller
     {
         $id = Crypt::decryptString($encid);
         $mapping = DB::table('gat_nayak_college_mapping')->where('status',1)->where('staff_profile_id',$id)->get();
-        $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.gatnayak_or_candidate',2)->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
+        $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.gatnayak_or_candidate',Null)->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
         $duColleges = DU_colleges::pluck('college_name','id');
 
         return view($this->current_menu . '.edit', [

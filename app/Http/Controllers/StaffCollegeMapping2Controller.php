@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\DU_colleges;
 use Illuminate\Support\Facades\Mail;
-class StaffCollegeMappingController extends Controller
+class StaffCollegeMapping2Controller extends Controller
 {
     protected $current_menu;
 
     public function __construct()
     {
-        $this->current_menu = 'StaffCollegeMapping';
+        $this->current_menu = 'StaffCollegeMapping2';
     }
 
     public function index(Request $request)
@@ -29,12 +29,12 @@ class StaffCollegeMappingController extends Controller
         $duColleges_mast = DU_colleges::pluck('college_name','id');
         $mapped_college_to_staff1 = DB::table('gat_nayak_college_mapping')
                      ->where('staff_profile_id',$candidate_name)
-                     ->where('status',1) 
+                     ->where('status',1)
                      ->pluck('college_name');
         $staff_Profile_arr = DB::table('staff_profile')
                                ->join('users', 'staff_profile.users_id', '=', 'users.id')
                                ->where('staff_profile.status',1)
-                               ->where('staff_profile.gatnayak_or_candidate',Null);
+                               ->where('staff_profile.gatnayak_or_candidate',2);
                                        if(Auth::user()->role_id == 60) {
                                              $staff_Profile_arr->where('users_id', Auth::user()->id);
                                        }
