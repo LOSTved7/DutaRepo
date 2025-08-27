@@ -80,14 +80,14 @@ Route::get('server_vars', function () {
 
     dd($var_arr, $_SERVER);
 });
-        Route::resource('RoleMast', 'RoleController');
+Route::resource('RoleMast', 'RoleController');
 
-        Route::resource('staff_details', 'Staff_detailController');
-        Route::any('staff_upload', 'Staff_detailController@upload')->name('staff_upload');
-        Route::resource('StaffCollegeMapping', 'StaffCollegeMappingController');
-        Route::resource('StaffCollegeMapping2', 'StaffCollegeMapping2Controller');
-        Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college')->name('get_staff_by_college');
-        Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
+Route::resource('staff_details', 'Staff_detailController');
+Route::any('staff_upload', 'Staff_detailController@upload')->name('staff_upload');
+Route::resource('StaffCollegeMapping', 'StaffCollegeMappingController');
+Route::resource('StaffCollegeMapping2', 'StaffCollegeMapping2Controller');
+Route::post('get_staff_by_college', 'Staff_detailController@get_staff_by_college')->name('get_staff_by_college');
+Route::post('get_staff_by_department', 'Staff_detailController@get_staff_by_department')->name('get_staff_by_department');
 Route::post('get_staff_by_designation', 'Staff_detailController@get_staff_by_designation')->name('get_staff_by_designation');
 Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_contact_no')->name('find_staff_by_contact_no');
 Route::post('get_Mappedcollege_by_staff', 'Staff_detailController@get_Mappedcollege_by_staff')->name('get_Mappedcollege_by_staff');
@@ -109,5 +109,7 @@ Route::post('/upload-excel', 'ExcelController@uploadExcel')->name('upload.excel'
 Route::get('/uploadExcel',function(){
     return view('uploadExcel');
 });
+Route::get('feed_back_form','CollegeMasterController@feed_back_form');
+Route::post('submitFeedback','CollegeMasterController@submitFeedback');
 
 ///////////////////     Hemant's Route ends here /////////////////////

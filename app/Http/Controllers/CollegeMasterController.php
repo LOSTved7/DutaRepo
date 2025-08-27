@@ -342,6 +342,33 @@ public function importData(Request $request)
 
     
 }
+public function feed_back_form(Request $request){
+    $college_mast=College::pluckActiveCodeAndName();
+    $department_data = DB::table('staff_detail')
+                        ->groupBy('department')
+                     ->pluck('department')->toArray();
+    return view('feed_back_form',[
+        'college_mast'=>$college_mast,
+        'department_data'=>$department_data,
+    ]);
+}
+public function submitFeedback(Request $request){
+        $faculty_name=!empty($request->faculty_name)?$request->faculty_name:'';
+        $college_name=!empty($request->college_name)?$request->college_name:'';
+        $department=!empty($request->department)?$request->department:'';
+        $mobile_number=!empty($request->mobile_number)?$request->mobile_number:'';
+        $feedback=!empty($request->feedback)?$request->feedback:'';
+        DB::table('feedback_form_data')->insert([
+            "faculty_name"=>$faculty_name,
+            "college_name"=>$college_name,
+            "department"=>$department,
+            "mobile_number"=>$mobile_number,
+            "feedback"=>$feedback,
+            "created_at"=>date('Y-m-d H:i:s')
+        ]);
+
+    return redirect('https://www.thevss.in/');
+}
 
     
 
