@@ -101,6 +101,7 @@ Route::any('gatNayakUpload', 'GatNayakController@upload')->name('gatNayakUpload'
 Route::get('send_whatsapp', function(){
      return view('send_whatsapp');
 });
+Route::get('send_whatsapp_by_college', 'StaffCollegeMappingController@send_whatsapp_by_college');
 
 Route::resource('ModuleMaster', 'ModuleMasterController');
 Route::resource('ModuleAssigning', 'ModuleAssigningController');

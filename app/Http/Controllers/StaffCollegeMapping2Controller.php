@@ -224,6 +224,7 @@ class StaffCollegeMapping2Controller extends Controller
         }
         $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
         $destinationPath_profile = '';
+        $image_url_path = '';
         $fileName ='';
         if(!empty($attachment)) {
             $extension = $attachment->getClientOriginalExtension();
@@ -231,6 +232,7 @@ class StaffCollegeMapping2Controller extends Controller
                 
             $destinationPath_profile = public_path('whatsapp_message_attachments');
             $attachment->move($destinationPath_profile, $fileName);
+            $image_url_path =  asset('whatsapp_message_attachments');
             // dd($destinationPath_profile.'/'.$fileName);
         }
         else {
@@ -245,7 +247,7 @@ class StaffCollegeMapping2Controller extends Controller
                 $phone_no  = "91".$mobile;
 
                 $message   = str_replace('    ', ' ', $body);
-                $image_url = $destinationPath_profile.'/'.$fileName;
+                $image_url = $image_url_path.'/'.$fileName;
 
                 $action = $fileName ? "sendImage" : "sendMessage";
                 if ($action == "sendMessage") {

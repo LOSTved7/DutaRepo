@@ -69,7 +69,7 @@ class StaffCollegeMappingController extends Controller
             'duColleges_mast' => $duColleges_mast,
         ]);
     }
-
+   
     public function create(Request $request)
     {
         $college_name = !empty($request->college_name)?$request->college_name:'';
@@ -225,6 +225,7 @@ class StaffCollegeMappingController extends Controller
         $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
         $destinationPath_profile = '';
         $fileName ='';
+        $image_url_path = '';
         if(!empty($attachment)) {
             $extension = $attachment->getClientOriginalExtension();
             $fileName = date('YmdHis').rand(10,99).'.'.$extension;
@@ -446,6 +447,58 @@ class StaffCollegeMappingController extends Controller
         return back()->with('message', 'WhatsApp messages sent successfully.');
     }
     
+
+
+
+     public function send_whatsapp_by_college(Request $request)
+    {
+        $candidate_name = !empty($request->candidate_name) ? $request->candidate_name : '';
+        $college_name = !empty($request->college_name) ? $request->college_name : '';
+        $staffProfiles = DB::table('staff_detail')->where('status',1)->pluck('name', 'id');
+        $staff_Profile_id = DB::table('staff_profile')->where('status',1)->where('users_id', Auth::user()->id)->pluck( 'id')->first();
+        $duColleges_mast = DU_colleges::pluck('college_name','id');
+        $mapped_college_to_staff1 = DB::table('gat_nayak_college_mapping')
+                     ->where('staff_profile_id',$candidate_name)
+                     ->where('status',1) 
+                     ->pluck('college_name');
+        $staff_Profile_arr = DB::table('staff_profile')
+                               ->join('users', 'staff_profile.users_id', '=', 'users.id')
+                               ->where('staff_profile.status',1)
+                               ->where('staff_profile.gatnayak_or_candidate',Null);
+                                       if(Auth::user()->role_id == 60) {
+                                             $staff_Profile_arr->where('users_id', Auth::user()->id);
+                                       }
+                               $staff_Profile_arr =$staff_Profile_arr->pluck( 'staff_profile.name','staff_profile.id');
+        $staff_detail_arr = DB::table('staff_detail')->where('status',1)->pluck( 'name','id');
+        $data = DB::table('staff_detail')
+                  ->where('staff_detail.status',1);
+                    if(Auth::user()->role_id == 60 && !empty($staff_Profile_id)) {
+                        $mapped_college_to_staff = DB::table('gat_nayak_college_mapping')
+                                    ->where('staff_profile_id',$staff_Profile_id)
+                                    ->where('status',1) 
+                                    ->pluck('college_name')->toArray();
+                        $data->whereIn('college_name', $mapped_college_to_staff);
+                    }
+        if (!empty($college_name) && $college_name =='All'){
+        }
+        else if(!empty($college_name)) {
+            $data->where('college_name', $college_name);
+        }
+            else{
+            $data->where('college_name', 0);
+        }
+        $data = $data->get();
+        return view($this->current_menu . '.send_whatsapp_by_college', [
+            'current_menu' => $this->current_menu,
+            'data' => $data,
+            'staff_Profile_arr' => $staff_Profile_arr,
+            'staffProfiles' => $staffProfiles,
+            'staff_detail_arr' => $staff_detail_arr,
+            'mapped_college_to_staff1' => $mapped_college_to_staff1,
+            'duColleges_mast' => $duColleges_mast,
+        ]);
+    }
+
     
     
 }
