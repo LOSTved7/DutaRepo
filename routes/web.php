@@ -93,10 +93,14 @@ Route::post('find_staff_by_contact_no', 'Staff_detailController@find_staff_by_co
 Route::post('get_Mappedcollege_by_staff', 'Staff_detailController@get_Mappedcollege_by_staff')->name('get_Mappedcollege_by_staff');
 Route::post('getStaffByGatNayak', 'Staff_detailController@getStaffByGatNayak')->name('getStaffByGatNayak');
 Route::post('send_whatsapp_notification', 'StaffCollegeMappingController@send_whatsapp_notification')->name('send.sms');
+Route::post('send_whatsapp_notification_bulk', 'StaffCollegeMappingController@send_whatsapp_notification_bulk')->name('send_whatsapp_notification_bulk');
 Route::post('send_mail_notification', 'StaffCollegeMappingController@send_mail_notification')->name('send.mail');
 Route::resource('CollegeMaster', 'CollegeMasterController');
 Route::post('CollegeMaster/importData', 'CollegeMasterController@importData')->name('college.importData');
 Route::any('gatNayakUpload', 'GatNayakController@upload')->name('gatNayakUpload');
+Route::get('send_whatsapp', function(){
+     return view('send_whatsapp');
+});
 
 Route::resource('ModuleMaster', 'ModuleMasterController');
 Route::resource('ModuleAssigning', 'ModuleAssigningController');

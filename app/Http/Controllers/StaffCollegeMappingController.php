@@ -350,14 +350,102 @@ class StaffCollegeMappingController extends Controller
         }
         return back()->with('message', 'Email sent successfully.');
     }
+
+
+    public function send_whatsapp_notification_bulk(Request $request)
+    {
+        $subject = !empty($request->subject) ? $request->subject : '';
+        $body = !empty($request->body) ? $request->body : '';
+        $numbers = !empty($request->numbers) ? $request->numbers : '';
+        $body = str_replace('    ', ' ', $request->input('body'));
+        $staffIds = $request->input('staff_ids');
+        $image_url = $request->input('image_url');
+        $numbers = !empty($request->numbers) ? explode(',',$request->numbers) : [];
+        // dd($numbers);
+        $whatsapp_nos = $numbers;
+        if (empty($whatsapp_nos)) {
+            return back()->with('error', 'No WhatsApp numbers selected to send notification.');
+        }
+        foreach ($whatsapp_nos as $num) {
+            if (empty($num) || $num == "") {
+                return back()->with('error', 'WhatsApp Number Not Found to send notification.');
+            }
+        }
+        $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
+        $destinationPath_profile = '';
+        $fileName ='';
+        $image_url_path = '';
+        if(!empty($attachment)) {
+            $extension = $attachment->getClientOriginalExtension();
+            $fileName = date('YmdHis').rand(10,99).'.'.$extension;
+                
+            $destinationPath_profile = public_path('whatsapp_message_attachments');
+            $image_url_path =  asset('whatsapp_message_attachments');
+            
+            $attachment->move($destinationPath_profile, $fileName);
+            // dd($destinationPath_profile.'/'.$fileName);
+        }
+        else {
+            $pathForDB_profile = NULL;
+        }
+        foreach ($whatsapp_nos as $id => $mobile) {
+            if (!empty($mobile)) {
+
+                $api_key   = "446121c5221741959770a43777e4aea7";
+                $base_url  = "https://wa.smsidea.com/api/v1";
+                $phone_no  = "91".$mobile;
+
+                $message   = str_replace('    ', ' ', $body);
+                $image_url = $image_url_path.'/'.$fileName;
+
+                $action = $fileName ? "sendImage" : "sendMessage";
+                if ($action == "sendMessage") {
+                    $json = [
+                        "key"     => $api_key,
+                        "to"      => $phone_no,
+                        "message" => $message
+                    ];
+                } else {
+                    $json = [
+                        "key"=> $api_key,
+                        "to"=> $phone_no,
+                        "url"=> $image_url,
+                        "caption"  => $message,
+                        "filename" => $fileName
+                    ];
+                }
+    //dd($json);
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => $base_url . "/" . $action,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => "",
+                    CURLOPT_MAXREDIRS   => 10,
+                    CURLOPT_TIMEOUT        => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST  => "POST",
+                    CURLOPT_POSTFIELDS     => json_encode($json),
+                    CURLOPT_HTTPHEADER     => ["Content-Type: application/json"]
+                ]);
+
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $decoded = json_decode($response);
+                if (!empty($decoded->ErrorMessage) && $decoded->ErrorMessage == "success") {
+                    DB::table("staff_detail")
+                        ->where("whatsapp", $mobile)
+                        ->update([
+                            "whatsapp_message_sent"      => 1,
+                            "whatsapp_message_sent_time" => date("Y-m-d H:i:s"),
+                        ]);
+                }
+            }
+        }
+        return back()->with('message', 'WhatsApp messages sent successfully.');
+    }
+    
+    
+    
 }
-     
-
-
-
-
-
-
-
-
-
