@@ -230,6 +230,8 @@ class StaffCollegeMappingController extends Controller
             $fileName = date('YmdHis').rand(10,99).'.'.$extension;
                 
             $destinationPath_profile = public_path('whatsapp_message_attachments');
+            $image_url_path =  asset('whatsapp_message_attachments');
+            
             $attachment->move($destinationPath_profile, $fileName);
             // dd($destinationPath_profile.'/'.$fileName);
         }
@@ -244,7 +246,7 @@ class StaffCollegeMappingController extends Controller
                 $phone_no  = "91".$mobile;
 
                 $message   = str_replace('    ', ' ', $body);
-                $image_url = $destinationPath_profile.'/'.$fileName;
+                $image_url = $image_url_path.'/'.$fileName;
 
                 $action = $fileName ? "sendImage" : "sendMessage";
                 if ($action == "sendMessage") {
@@ -262,7 +264,7 @@ class StaffCollegeMappingController extends Controller
                         "filename" => $fileName
                     ];
                 }
-// dd($json);
+    //dd($json);
                 $ch = curl_init();
                 curl_setopt_array($ch, [
                     CURLOPT_URL => $base_url . "/" . $action,
