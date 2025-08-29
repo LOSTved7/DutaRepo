@@ -236,7 +236,6 @@ class StaffCollegeMappingController extends Controller
         else {
             $pathForDB_profile = NULL;
         }
-
         foreach ($whatsapp_nos as $id => $mobile) {
             if (!empty($mobile)) {
 
@@ -263,7 +262,7 @@ class StaffCollegeMappingController extends Controller
                         "filename" => $fileName
                     ];
                 }
-
+// dd($json);
                 $ch = curl_init();
                 curl_setopt_array($ch, [
                     CURLOPT_URL => $base_url . "/" . $action,
