@@ -213,7 +213,7 @@ class StaffCollegeMappingController extends Controller
         $staffIds = $request->input('staff_ids');
         $image_url = $request->input('image_url');
         $numbers = !empty($selected_staff) ? json_decode($selected_staff) : [];
-        $whatsapp_nos = DB::table('staff_detail')->whereIn('id', $numbers)->pluck('whatsapp')->toArray();
+        $whatsapp_nos = DB::table('staff_detail')->whereIn('id', $numbers)->pluck('mobile_no1')->toArray();
         if (empty($whatsapp_nos)) {
             return back()->with('error', 'No WhatsApp numbers selected to send notification.');
         }
