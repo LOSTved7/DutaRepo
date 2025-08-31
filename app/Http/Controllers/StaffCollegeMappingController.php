@@ -300,7 +300,7 @@ class StaffCollegeMappingController extends Controller
     {
         $subject = !empty($request->subject) ? $request->subject : '';
         $body = !empty($request->body) ? $request->body : '';
-        $body = nl2br(e($body));
+        // $body = nl2br(e($body));
         $selected_staff = !empty($request->selected_staff) ? $request->selected_staff : '';
         $staffIds = $request->input('staff_ids');
         $image_url = $request->input('image_url');
@@ -329,26 +329,24 @@ class StaffCollegeMappingController extends Controller
             $pathForDB_profile = NULL;
             $filePath = '';
         }
+        // dd($body);
+        Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+            $message->to($emails)
+                ->subject($subject)
+                ->setBody($body, 'text/html');
 
-        foreach ($emails as $email) {
-            Mail::send([], [], function ($message) use ($email, $subject, $body, $filePath, $fileName) {
-                $message->to($email)
-                    ->subject($subject)
-                    ->setBody($body, 'text/html');
-
-                if ($filePath && file_exists($filePath)) {
-                    $message->attach($filePath, [
-                        'as' => $fileName
-                    ]);
-                }
-            });
+            if ($filePath && file_exists($filePath)) {
+                $message->attach($filePath, [
+                    'as' => $fileName
+                ]);
+            }
+        });
             DB::table("staff_detail")
-                ->where("email1", $email)
+                ->whereIn("email1", $emails)
                 ->update([
-                    "mail_sent"      => 1,
+                    "mail_sent"       => 1,
                     "email_sent_time" => date("Y-m-d H:i:s"),
                 ]);
-        }
         return back()->with('message', 'Email sent successfully.');
     }
 
