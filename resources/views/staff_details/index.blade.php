@@ -202,6 +202,7 @@ STAFF DETAILS
 		var department = element.value;
 		var college_name_selected = document.getElementById('college_name').value;
 		var designation_selected = document.getElementById('designation').value;
+		const duColleges_mast = <?php echo(json_encode($duColleges_mast)); ?>;
 		$.ajaxSetup({
 			    headers: {
 			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -224,7 +225,7 @@ STAFF DETAILS
 				$('#college_name').append('<option></option>')
 					$.each(college_name, function(key, value){
 						let selected = (college_name_selected == value) ? 'selected' : '';
-						$('#college_name').append('<option value="'+value+'"'+selected+'>'+value+'</option>');
+						$('#college_name').append('<option value="'+value+'"'+selected+'>'+duColleges_mast[value]??''+'</option>');
 					});
 				$('#designation').empty();
 				$('#designation').append('<option></option>')
@@ -240,6 +241,7 @@ STAFF DETAILS
 		var designation = element.value;
 		var college_name_selected = document.getElementById('college_name').value;
 		var department_selected = document.getElementById('department').value;
+		const duColleges_mast = <?php echo(json_encode($duColleges_mast)); ?>;
 		$.ajaxSetup({
 			    headers: {
 			        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -261,7 +263,7 @@ STAFF DETAILS
 				$('#college_name').append('<option></option>')
 					$.each(college_name, function(key, value){
 						let selected = (college_name_selected == value) ? 'selected' : '';
-						$('#college_name').append('<option value="'+value+'"'+selected+'>'+value+'</option>');
+						$('#college_name').append('<option value="'+value+'"'+selected+'>'+duColleges_mast[value]??''+'</option>');
 					});
 				$('#department').empty();
 				$('#department').append('<option></option>')
