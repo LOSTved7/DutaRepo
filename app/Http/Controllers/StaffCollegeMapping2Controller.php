@@ -286,7 +286,7 @@ class StaffCollegeMapping2Controller extends Controller
                 $decoded = json_decode($response);
                 if (!empty($decoded->ErrorMessage) && $decoded->ErrorMessage == "success") {
                     DB::table("staff_detail")
-                        ->where("whatsapp", $mobile)
+                        ->where("mobile_no1", $mobile)
                         ->update([
                             "whatsapp_message_sent"      => 1,
                             "whatsapp_message_sent_time" => date("Y-m-d H:i:s"),
