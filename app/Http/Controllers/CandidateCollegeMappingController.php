@@ -36,8 +36,12 @@ class CandidateCollegeMappingController extends Controller
     public function create()
     {
         $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.status',1)->where('staff_profile.gatnayak_or_candidate',Null)->pluck('staff_profile.name', 'staff_profile.id');
-        $duColleges = DU_colleges::pluck('college_name','id');
-
+        // $duColleges = DU_colleges::pluck('college_name','id');
+        $duColleges = DB::table('staff_detail')
+                        ->join('duta_colleges','duta_colleges.id','staff_detail.college_name')
+                        ->where('staff_detail.status', 1)
+                        ->groupBy('duta_colleges.college_name','duta_colleges.id')
+                        ->pluck('duta_colleges.college_name','duta_colleges.id');
         return view($this->current_menu . '.create', [
             'current_menu' => $this->current_menu,
             'staffProfiles' => $staffProfiles,
@@ -82,7 +86,12 @@ class CandidateCollegeMappingController extends Controller
         $id = Crypt::decryptString($encid);
         $mapping = DB::table('gat_nayak_college_mapping')->where('status',1)->where('staff_profile_id',$id)->get();
         $staffProfiles = DB::table('staff_profile')->join('users','users.id','staff_profile.users_id')->where('staff_profile.gatnayak_or_candidate',Null)->where('staff_profile.status',1)->pluck('staff_profile.name', 'staff_profile.id');
-        $duColleges = DU_colleges::pluck('college_name','id');
+        // $duColleges = DU_colleges::pluck('college_name','id');
+        $duColleges = DB::table('staff_detail')
+                        ->join('duta_colleges','duta_colleges.id','staff_detail.college_name')
+                        ->where('staff_detail.status', 1)
+                        ->groupBy('duta_colleges.college_name','duta_colleges.id')
+                        ->pluck('duta_colleges.college_name','duta_colleges.id');
 
         return view($this->current_menu . '.edit', [
             'current_menu' => $this->current_menu,

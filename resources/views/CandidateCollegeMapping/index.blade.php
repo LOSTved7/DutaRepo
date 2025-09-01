@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <th>S.No</th>
-                                <th>Gat Nayak Name</th>
+                                <th>Candidate Name</th>
                                 <th>Colleges mapped</th>
                                 <th>Action</th>
                             </tr>
