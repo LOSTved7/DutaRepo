@@ -337,7 +337,7 @@ class StaffCollegeMappingController extends Controller
 
             if ($filePath && file_exists($filePath)) {
                 $message->attach($filePath, [
-                    'as' => $fileName
+                    'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
                 ]);
             }
         });
