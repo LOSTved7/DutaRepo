@@ -331,7 +331,8 @@ class StaffCollegeMapping2Controller extends Controller
         }
 
         Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
-            $message->to($emails)
+            $message->to('raghukamlesh@gmail.com')
+                ->bcc($emails)
                 ->subject($subject)
                 ->setBody($body, 'text/html');
 
