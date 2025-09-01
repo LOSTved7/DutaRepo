@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\DU_colleges;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 class StaffCollegeMapping2Controller extends Controller
 {
     protected $current_menu;
@@ -309,11 +311,11 @@ class StaffCollegeMapping2Controller extends Controller
         if (empty($emails)) {
             return back()->with('error', 'No Emails selected to send notification.');
         }
-        foreach ($emails as $num) {
-            if (empty($num) || $num == "") {
-                return back()->with('error', 'Email Not Found to send notification.');
-            }
-        }
+        // foreach ($emails as $num) {
+        //     if (empty($num) || $num == "") {
+        //         return back()->with('error', 'Email Not Found to send notification.');
+        //     }
+        // }
         $attachment = !empty($request->file('attachment'))?$request->file('attachment'):'';
           $destinationPath_profile = '';
         $fileName ='';
@@ -330,18 +332,34 @@ class StaffCollegeMapping2Controller extends Controller
             $filePath = '';
         }
 
-        Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
-            $message->to('raghukamlesh@gmail.com')
-                ->bcc($emails)
-                ->subject($subject)
-                ->setBody($body, 'text/html');
+        // Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+        //     $message->to('raghukamlesh@gmail.com')
+        //         ->bcc($emails)
+        //         ->subject($subject)
+        //         ->setBody($body, 'text/html');
 
-            if ($filePath && file_exists($filePath)) {
-                $message->attach($filePath, [
-                    'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
-                ]);
+        //     if ($filePath && file_exists($filePath)) {
+        //         $message->attach($filePath, [
+        //             'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
+        //         ]);
+        //     }
+        // });
+
+
+        $accounts = config('mail.accounts');
+        $accountIndex = Cache::get('current_mail_account', 0);
+
+        try {
+            $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
+        } catch (\Swift_TransportException $e) {
+            if (str_contains($e->getMessage(), 'Daily user sending limit exceeded')) {
+                $accountIndex = ($accountIndex + 1) % count($accounts);
+                Cache::put('current_mail_account', $accountIndex, 86400);
+                $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
+            } else {
+                throw $e;
             }
-        });
+        }
             DB::table("staff_detail")
                 ->whereIn("email1", $emails)
                 ->update([
@@ -349,6 +367,31 @@ class StaffCollegeMapping2Controller extends Controller
                     "email_sent_time" => date("Y-m-d H:i:s"),
                 ]);
         return back()->with('message', 'Email sent successfully.');
+    }
+
+
+        private function sendWithAccount($account, $emails, $subject, $body, $filePath, $fileName)
+    {
+        Config::set('mail.mailers.smtp', [
+            'transport' => 'smtp',
+            'host'      => 'smtp.gmail.com',
+            'port'      => 587,
+            'encryption'=> 'tls',
+            'username'  => $account['username'],
+            'password'  => $account['password'],
+        ]);
+        Config::set('mail.from', $account['from']);
+        Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+            $message->to('raghukamlesh@gmail.com')
+                ->bcc($emails)
+                ->subject($subject)
+                ->setBody($body, 'text/html');
+            if ($filePath && file_exists($filePath)) {
+                $message->attach($filePath, [
+                    'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
+                ]);
+            }
+        });
     }
 }
      
