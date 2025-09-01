@@ -149,15 +149,15 @@
                                                     <td>{{ !empty($item->mobile_no1)?$item->mobile_no1:'' }}</td>
                                                     <td>{{ !empty($item->email1)?$item->email1:'' }}</td>
                                                     <td>
-                                                        @if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent==1)
-                                                            ✅ WhatsApp Sent
+                                                        @if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent>0)
+                                                            ✅ WhatsApp Sent({{$item->whatsapp_message_sent}})
                                                         @endif
 
-                                                        @if(!empty($item->mail_sent) && $item->mail_sent==1)
-                                                            @if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent==1)
+                                                        @if(!empty($item->mail_sent) && $item->mail_sent>0)
+                                                            @if(!empty($item->whatsapp_message_sent) && $item->whatsapp_message_sent>0)
                                                                 <br>
                                                             @endif
-                                                            ✅ Mail Sent
+                                                            ✅ Mail Sent({{ $item->mail_sent }})
                                                         @endif
                                                     </td>
                                                         <td>{{ !empty($duColleges_mast[$item->college_name])?$duColleges_mast[$item->college_name]:'' }}</td>

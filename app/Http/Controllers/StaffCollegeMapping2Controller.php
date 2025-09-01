@@ -290,7 +290,7 @@ class StaffCollegeMapping2Controller extends Controller
                     DB::table("staff_detail")
                         ->where("mobile_no1", $mobile)
                         ->update([
-                            "whatsapp_message_sent"      => 1,
+                            "whatsapp_message_sent"      => DB::raw("COALESCE(mail_sent, 0) + 1"),
                             "whatsapp_message_sent_time" => date("Y-m-d H:i:s"),
                         ]);
                 }
@@ -363,7 +363,7 @@ class StaffCollegeMapping2Controller extends Controller
             DB::table("staff_detail")
                 ->whereIn("email1", $emails)
                 ->update([
-                    "mail_sent"       => 1,
+                    "mail_sent"       => DB::raw("COALESCE(mail_sent, 0) + 1"),
                     "email_sent_time" => date("Y-m-d H:i:s"),
                 ]);
         return back()->with('message', 'Email sent successfully.');
