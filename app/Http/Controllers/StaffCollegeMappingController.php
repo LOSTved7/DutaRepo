@@ -332,39 +332,76 @@ class StaffCollegeMappingController extends Controller
             $filePath = '';
         }
         // dd($body);
-        // Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
-        //     $message->to('raghukamlesh@gmail.com')
-        //         ->bcc($emails)
-        //         ->subject($subject)
-        //         ->setBody($body, 'text/html');
+        Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+            $message->to('raghukamlesh@gmail.com')
+                ->bcc($emails)
+                ->subject($subject)
+                ->setBody($body, 'text/html');
 
-        //     if ($filePath && file_exists($filePath)) {
-        //         $message->attach($filePath, [
-        //             'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
-        //         ]);
-        //     }
-        // });
-
-        $accounts = config('mail.accounts');
-        $accountIndex = Cache::get('current_mail_account', 0);
-        for ($i = 0; $i < count($accounts); $i++) {
-            try {
-                // $response = $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
-                $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
-                Cache::put('current_mail_account', $accountIndex, 86400);
-                break;
-
-            } catch (\Swift_TransportException $e) {
-                if (str_contains($e->getMessage(), 'Daily user sending limit exceeded')) {
-                    $accountIndex = ($accountIndex + 1) % count($accounts);
-                    if ($i == count($accounts)) {
-                        return back()->with('error', 'All Sender Mails are exceed their limit.');
-                    }
-                } else {
-                    return back()->with('error', 'Mail Not Send');
-                }
+            if ($filePath && file_exists($filePath)) {
+                $message->attach($filePath, [
+                    'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
+                ]);
             }
-        }
+        });
+
+                // $accounts = config('mail.accounts');
+                // $accountIndex = Cache::get('current_mail_account', 0);
+                // dd($accountIndex);
+                // for ($i = 0; $i < count($accounts); $i++) {
+                //     $e='';
+                // // dd(config('mail.mailers.smtp'));
+
+                //     try {
+                //                 // $response = $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
+                //                 // $this->sendWithAccount($accounts[$accountIndex], $emails, $subject, $body, $filePath, $fileName);
+                //                 Config::set('mail.mailers.smtp', [
+                //                     'transport' => 'smtp',
+                //                     'host' => 'smtp.gmail.com',
+                //                     'port' => 587,
+                //                     'encryption' => 'tls',
+                //                     'username' => $accounts[$accountIndex]['username'],
+                //                     'password' => $accounts[$accountIndex]['password'],
+                //                     'address' => $accounts[$accountIndex]['username'],
+                //                     'name' => $accounts[$accountIndex]['from']['name']
+                //                 ]); 
+                                
+                //                 Config::set('mail.from', $accounts[$accountIndex]['from']);
+                                // dd(config('mail.mailers.smtp'));
+                                // Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+                                //     $message->to('raghukamlesh@gmail.com')
+                                //         ->bcc($emails)
+                                //         ->subject($subject)
+                                //         ->setBody($body, 'text/html');
+                                //     if ($filePath && file_exists($filePath)) {
+                                //         $message->attach($filePath, [
+                                //             'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
+                                //         ]);
+                                //     }
+                                // });
+
+                    //             Cache::put('current_mail_account', $accountIndex, 86400);
+                    //             break;
+
+                    // } catch (\Swift_TransportException $e) {
+                    //     // dd($e->getMessage());
+                    //             if (str_contains($e->getMessage(), 'Daily user sending limit exceeded')) {
+                    //                 $accountIndex = ($accountIndex + 1);
+                    //                 if($i==4){
+                    //                     // dd($e,$accountIndex);
+                    //             dd(config('mail.mailers.smtp'),$e,$accountIndex);
+
+                    //                 }
+                    //                 if ($i == count($accounts)) {
+                    //                     return back()->with('error', 'All Sender Mails are exceed their limit.');
+                    //                 }
+                    //             } else {
+                    //                 return back()->with('error', 'Mail Not Send');
+                    //             }
+                    // }
+                    // dd($accounts[$accountIndex]);
+                // }
+                // dd(config('mail.mailers.smtp'));
             DB::table("staff_detail")
                 ->whereIn("email1", $emails)
                 ->update([
@@ -375,30 +412,31 @@ class StaffCollegeMappingController extends Controller
     }
 
 
-    private function sendWithAccount($account, $emails, $subject, $body, $filePath, $fileName)
-    {
-        Config::set('mail.mailers.smtp', [
-            'transport' => 'smtp',
-            'host'      => 'smtp.gmail.com',
-            'port'      => 587,
-            'encryption'=> 'tls',
-            'username'  => $account['username'],
-            'password'  => $account['password'],
-        ]);
-        Config::set('mail.from', $account['from']);
-       Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
-            $message->to('raghukamlesh@gmail.com')
-                ->bcc($emails)
-                ->subject($subject)
-                ->setBody($body, 'text/html');
-            if ($filePath && file_exists($filePath)) {
-                $message->attach($filePath, [
-                    'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
-                ]);
-            }
-        });
-        // return $res;
-    }
+    // private function sendWithAccount($account, $emails, $subject, $body, $filePath, $fileName)
+    // {
+    //     // dd($account);
+    //     Config::set('mail.mailers.smtp', [
+    //         'transport' => 'smtp',
+    //         'host'      => 'smtp.gmail.com',
+    //         'port'      => 587,
+    //         'encryption'=> 'tls',
+    //         'username'  => $account['username'],
+    //         'password'  => $account['password'],
+    //     ]);
+    //     Config::set('mail.from', $account['from']);
+    //    Mail::send([], [], function ($message) use ($emails, $subject, $body, $filePath, $fileName) {
+    //         $message->to('Hemantkumar20150020123@gmail.com')
+    //             ->bcc($emails)
+    //             ->subject($subject)
+    //             ->setBody($body, 'text/html');
+    //         if ($filePath && file_exists($filePath)) {
+    //             $message->attach($filePath, [
+    //                 'as' => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel'
+    //             ]);
+    //         }
+    //     });
+    //     // return $res;
+    // }
 
     public function send_whatsapp_notification_bulk(Request $request)
     {

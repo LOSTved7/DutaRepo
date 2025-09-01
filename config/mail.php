@@ -119,7 +119,7 @@ return [
     'accounts' => [
         [
             'username' => 'vssdu25@gmail.com',
-            'password' => 'mfwbjlrnvuhavsyg',
+            'password' => 'mfwbjlrnvuhavsyg',   
             'from'     => [
                 'address' => 'vssdu25@gmail.com',
                 'name'    => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel',
@@ -130,6 +130,14 @@ return [
             'password' => 'tckzpyfecsyccpmz',
             'from'     => [
                 'address' => 'vsskamleshdu@gmail.com',
+                'name'    => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel',
+            ],
+        ],
+        [
+            'username' => 'hemantkumar45506@gmail.com',
+            'password' => 'lsbvokwksuicixep',
+            'from'     => [
+                'address' => 'hemantkumar45506@gmail.com',
                 'name'    => 'Vote for Dr Kamlesh Kr Raghuvanshi for DUTA President, Ballot no 1 and VSS Panel',
             ],
         ],
